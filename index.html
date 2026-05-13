@@ -7,58 +7,63 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg:     #0c0d0b;
-  --bg2:    #131410;
-  --bg3:    #1a1b17;
-  --bg4:    #21221d;
-  --line:   rgba(255,255,255,0.07);
-  --line2:  rgba(255,255,255,0.12);
-  --text:   #edeae0;
-  --text2:  #7a7770;
-  --text3:  #3e3d38;
-  --lime:   #d4f050;
-  --lime2:  rgba(212,240,80,0.1);
-  --lime3:  rgba(212,240,80,0.2);
-  --mono:   'DM Mono', monospace;
-  --serif:  'Instrument Serif', Georgia, serif;
+  --bg:    #0c0d0b; --bg2: #131410; --bg3: #1a1b17; --bg4: #21221d;
+  --line:  rgba(255,255,255,0.07); --line2: rgba(255,255,255,0.13);
+  --text:  #edeae0; --text2: #7a7770; --text3: #3e3d38;
+  --lime:  #d4f050; --lime2: rgba(212,240,80,0.1); --lime3: rgba(212,240,80,0.22);
+  --mono:  'DM Mono', monospace; --serif: 'Instrument Serif', Georgia, serif;
 }
-
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--mono); }
 
-.shell { display: grid; grid-template-rows: 54px 1fr; height: 100vh; }
+/* ── Shell ── */
+.shell { display: grid; grid-template-rows: 52px 1fr; height: 100vh; }
 
+/* ── Header ── */
 header {
-  display: flex; align-items: center; gap: 16px; padding: 0 22px;
+  display: flex; align-items: center; gap: 14px; padding: 0 20px;
   border-bottom: 1px solid var(--line); background: var(--bg2);
 }
-.logo { font-family: var(--serif); font-size: 20px; letter-spacing: -0.02em; }
+.logo { font-family: var(--serif); font-size: 19px; letter-spacing: -0.02em; }
 .logo span { color: var(--lime); font-style: italic; }
 .header-sep { flex: 1; }
-.header-meta { font-size: 11px; color: var(--text3); letter-spacing: 0.05em; }
+.header-meta { font-size: 11px; color: var(--text3); }
 .btn-cfg {
-  font-family: var(--mono); font-size: 11px; cursor: pointer;
-  padding: 5px 12px; border-radius: 6px;
-  border: 1px solid var(--line2); background: transparent; color: var(--text2);
-  transition: all .15s; letter-spacing: 0.04em;
+  font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 5px 11px;
+  border-radius: 6px; border: 1px solid var(--line2); background: transparent; color: var(--text2);
+  transition: all .15s;
 }
 .btn-cfg:hover { border-color: var(--lime); color: var(--lime); }
 
-.body { display: grid; grid-template-columns: 300px 1fr; overflow: hidden; }
+/* ── Body ── */
+.body { display: grid; grid-template-columns: 280px 1fr; overflow: hidden; }
 
-/* Left */
-.left {
-  border-right: 1px solid var(--line); background: var(--bg2);
-  display: flex; flex-direction: column; overflow: hidden;
+/* ── Left panel ── */
+.left { border-right: 1px solid var(--line); background: var(--bg2); display: flex; flex-direction: column; overflow: hidden; }
+
+.client-selector { padding: 10px 14px 12px; border-bottom: 1px solid var(--line); }
+.client-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.client-bar-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); flex: 1; }
+.btn-sm {
+  font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 3px 8px;
+  border-radius: 5px; border: 1px solid var(--line2); background: transparent; color: var(--text2);
+  transition: all .15s;
 }
-.panel-label {
-  padding: 16px 18px 10px;
-  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3);
+.btn-sm:hover { border-color: var(--lime); color: var(--lime); }
+.client-select {
+  width: 100%; background: var(--bg3); border: 1px solid var(--line2); border-radius: 8px;
+  color: var(--text); font-family: var(--mono); font-size: 12px; padding: 8px 28px 8px 10px;
+  outline: none; cursor: pointer; transition: border-color .15s; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%237a7770' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
 }
-.themes-input-wrap { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 8px; }
+.client-select:focus { border-color: var(--lime); }
+.client-select option { background: var(--bg2); }
+
+.panel-label { padding: 14px 16px 8px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
+.themes-wrap { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
 textarea#themesInput {
-  width: 100%; height: 160px; resize: none;
+  width: 100%; height: 150px; resize: none;
   background: var(--bg3); border: 1px solid var(--line2); border-radius: 8px;
   color: var(--text); font-family: var(--mono); font-size: 12px; line-height: 1.7;
   padding: 10px 12px; outline: none; transition: border-color .15s;
@@ -66,119 +71,106 @@ textarea#themesInput {
 textarea#themesInput:focus { border-color: var(--lime); }
 textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 .hint { font-size: 10px; color: var(--text3); line-height: 1.6; }
-.hint b { color: var(--text2); font-weight: 500; }
+.hint b { color: var(--text2); font-weight: 400; }
 .btn-search {
-  width: 100%; padding: 10px; font-family: var(--mono); font-size: 12px; font-weight: 500;
+  width: 100%; padding: 9px; font-family: var(--mono); font-size: 12px; font-weight: 500;
   cursor: pointer; border-radius: 8px; letter-spacing: 0.04em;
   border: 1px solid rgba(212,240,80,0.35); background: var(--lime2); color: var(--lime);
   transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .btn-search:hover { background: var(--lime3); }
 .btn-search:disabled { opacity: 0.4; cursor: not-allowed; }
-.divider { border: none; border-top: 1px solid var(--line); margin: 0; }
 
-.client-selector { padding: 10px 14px; border-bottom: 1px solid var(--line); }
-.client-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.client-bar-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); flex: 1; }
-.btn-add-client {
-  font-family: var(--mono); font-size: 10px; cursor: pointer;
-  padding: 3px 8px; border-radius: 5px;
-  border: 1px solid var(--line2); background: transparent; color: var(--text2);
-  transition: all .15s;
-}
-.btn-add-client:hover { border-color: var(--lime); color: var(--lime); }
-.client-select {
-  width: 100%; background: var(--bg3); border: 1px solid var(--line2); border-radius: 8px;
-  color: var(--text); font-family: var(--mono); font-size: 12px;
-  padding: 8px 10px; outline: none; cursor: pointer; transition: border-color .15s;
-  appearance: none; -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%237a7770' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px;
-}
-.client-select:focus { border-color: var(--lime); }
-.client-select option { background: var(--bg2); color: var(--text); }
-.themes-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+.divider { border: none; border-top: 1px solid var(--line); }
+.themes-list { flex: 1; overflow-y: auto; padding: 6px 0; }
 .theme-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 18px; cursor: pointer; transition: background .12s;
-  border-left: 2px solid transparent;
+  display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer;
+  transition: background .12s; border-left: 2px solid transparent;
 }
 .theme-row:hover { background: var(--bg3); }
 .theme-row.active { background: var(--bg3); border-left-color: var(--lime); }
-.theme-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); flex-shrink: 0; transition: background .2s; }
+.theme-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
 .theme-dot.done { background: var(--lime); }
 .theme-dot.loading { background: #f0904e; animation: pulse 1s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
-.theme-name { font-size: 13px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+.theme-name { font-size: 13px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .theme-count { font-size: 10px; color: var(--text3); }
 
-/* Right */
-.right { display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
-.right-header {
-  padding: 16px 22px 14px; border-bottom: 1px solid var(--line);
-  display: flex; align-items: baseline; gap: 12px;
-}
-.right-title { font-family: var(--serif); font-size: 22px; font-style: italic; color: var(--text); }
+/* ── Right panel ── */
+.right { display: flex; flex-direction: column; overflow: hidden; }
+.right-header { padding: 16px 22px 12px; border-bottom: 1px solid var(--line); display: flex; align-items: baseline; gap: 12px; }
+.right-title { font-family: var(--serif); font-size: 22px; font-style: italic; }
 .right-sub { font-size: 11px; color: var(--text2); }
-.load-bar-wrap { height: 2px; }
+.load-bar-wrap { height: 2px; background: transparent; }
 .load-bar { height: 100%; background: var(--lime); width: 0%; transition: width .4s ease; }
-.photos-area { flex: 1; overflow-y: auto; padding: 22px; }
-.photos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-  gap: 12px;
+
+.photos-area { flex: 1; overflow-y: auto; padding: 22px; display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Featured layout ── */
+.featured-block { display: flex; flex-direction: column; gap: 10px; }
+.featured-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+
+.featured-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+
+/* Main featured card */
+.photo-card-featured {
+  border-radius: 12px; overflow: hidden; cursor: pointer;
+  border: 2px solid var(--line2); background: var(--bg3);
+  transition: border-color .15s, transform .12s; position: relative;
 }
-.photo-card {
+.photo-card-featured:hover { border-color: rgba(212,240,80,0.4); transform: translateY(-2px); }
+.photo-card-featured.selected { border-color: var(--lime); }
+.photo-card-featured img { width: 100%; height: 220px; object-fit: cover; display: block; background: var(--bg4); }
+.photo-card-featured .card-body { padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; }
+.photo-card-featured .card-name { font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+.photo-card-featured .card-badge { font-size: 10px; color: var(--lime); background: var(--lime2); border: 1px solid rgba(212,240,80,0.25); padding: 2px 8px; border-radius: 100px; white-space: nowrap; }
+
+/* Alt cards */
+.photo-card-alt {
   border-radius: 10px; overflow: hidden; cursor: pointer;
   border: 1.5px solid var(--line); background: var(--bg3);
-  transition: border-color .15s, transform .12s;
-  position: relative;
+  transition: border-color .15s, transform .12s; position: relative;
 }
-.photo-card:hover { border-color: var(--line2); transform: translateY(-2px); }
-.photo-card.selected { border-color: var(--lime); }
-.photo-card img { width: 100%; height: 130px; object-fit: cover; display: block; background: var(--bg4); }
-.photo-card-body { padding: 8px 10px; }
-.photo-card-name { font-size: 10px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.photo-card-score { font-size: 10px; color: var(--lime); font-weight: 500; margin-top: 2px; }
+.photo-card-alt:hover { border-color: var(--line2); transform: translateY(-2px); }
+.photo-card-alt.selected { border-color: var(--lime); }
+.photo-card-alt img { width: 100%; height: 160px; object-fit: cover; display: block; background: var(--bg4); }
+.photo-card-alt .card-body { padding: 7px 9px; }
+.photo-card-alt .card-name { font-size: 10px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.photo-card-alt .card-score { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* Copy overlay — shared */
 .copy-overlay {
   position: absolute; inset: 0;
-  background: rgba(12,13,11,0.85);
+  background: rgba(12,13,11,0.82);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-  opacity: 0; transition: opacity .15s; border-radius: 8px;
+  opacity: 0; transition: opacity .15s; border-radius: inherit;
 }
-.photo-card.selected .copy-overlay { opacity: 1; }
-.copy-icon { font-size: 30px; line-height: 1; }
+.photo-card-featured.selected .copy-overlay,
+.photo-card-alt.selected .copy-overlay { opacity: 1; }
+.copy-icon { font-size: 28px; }
 .copy-label { font-size: 10px; color: var(--text2); letter-spacing: 0.08em; text-transform: uppercase; }
 
+/* State boxes */
 .state-box {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  height: 100%; gap: 14px; color: var(--text3); text-align: center; padding: 40px;
+  height: 100%; gap: 14px; text-align: center; padding: 40px; color: var(--text3);
 }
 .state-icon { font-size: 44px; margin-bottom: 4px; }
 .state-title { font-family: var(--serif); font-size: 22px; color: var(--text2); font-style: italic; }
-.state-sub { font-size: 12px; max-width: 320px; line-height: 1.8; color: var(--text3); }
+.state-sub { font-size: 12px; max-width: 320px; line-height: 1.8; }
 
-/* Modal */
-.overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
-  display: flex; align-items: center; justify-content: center; z-index: 50;
-}
+/* ── Modals ── */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 50; }
 .overlay.hidden { display: none; }
-.modal {
-  background: var(--bg2); border: 1px solid var(--line2); border-radius: 14px;
-  width: 500px; max-width: 95vw; overflow: hidden;
-}
-.modal-head {
-  padding: 20px 24px 16px; border-bottom: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.modal-head-title { font-family: var(--serif); font-size: 20px; font-style: italic; }
+.modal { background: var(--bg2); border: 1px solid var(--line2); border-radius: 14px; width: 480px; max-width: 95vw; overflow: hidden; }
+.modal-head { padding: 20px 24px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-family: var(--serif); font-size: 20px; font-style: italic; }
 .modal-close { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 18px; }
 .modal-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 18px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field-label { font-size: 10px; color: var(--text2); letter-spacing: 0.1em; text-transform: uppercase; }
 .field-hint { font-size: 11px; color: var(--text3); line-height: 1.65; }
-.field-hint code { color: var(--lime); background: var(--lime2); padding: 1px 5px; border-radius: 4px; font-family: var(--mono); }
+.field-hint code { color: var(--lime); background: var(--lime2); padding: 1px 5px; border-radius: 4px; }
 .field-input {
   background: var(--bg3); border: 1px solid var(--line2); border-radius: 8px;
   color: var(--text); font-family: var(--mono); font-size: 12px;
@@ -187,28 +179,19 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 .field-input:focus { border-color: var(--lime); }
 .field-input::placeholder { color: var(--text3); }
 .modal-foot { padding: 14px 24px 20px; display: flex; gap: 10px; justify-content: flex-end; }
-.btn-cancel {
-  font-family: var(--mono); font-size: 12px; cursor: pointer;
-  padding: 7px 16px; border-radius: 7px;
-  border: 1px solid var(--line2); background: transparent; color: var(--text2); transition: all .15s;
-}
+.btn-cancel { font-family: var(--mono); font-size: 12px; cursor: pointer; padding: 7px 16px; border-radius: 7px; border: 1px solid var(--line2); background: transparent; color: var(--text2); transition: all .15s; }
 .btn-cancel:hover { color: var(--text); }
-.btn-save {
-  font-family: var(--mono); font-size: 12px; cursor: pointer; font-weight: 500;
-  padding: 7px 16px; border-radius: 7px;
-  border: 1px solid rgba(212,240,80,0.35); background: var(--lime2); color: var(--lime); transition: all .15s;
-}
+.btn-save { font-family: var(--mono); font-size: 12px; cursor: pointer; font-weight: 500; padding: 7px 16px; border-radius: 7px; border: 1px solid rgba(212,240,80,0.35); background: var(--lime2); color: var(--lime); transition: all .15s; }
 .btn-save:hover { background: var(--lime3); }
 
-/* Toast */
+/* ── Toast ── */
 .toast {
   position: fixed; bottom: 22px; right: 22px; z-index: 99;
   background: var(--bg3); border: 1px solid var(--line2); border-radius: 8px;
   padding: 10px 16px; font-size: 12px; color: var(--text);
-  display: flex; align-items: center; gap: 9px;
+  display: flex; align-items: center; gap: 9px; max-width: 380px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-  transform: translateY(16px); opacity: 0; transition: transform .22s, opacity .22s;
-  pointer-events: none; max-width: 360px;
+  transform: translateY(16px); opacity: 0; transition: transform .22s, opacity .22s; pointer-events: none;
 }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); flex-shrink: 0; }
@@ -218,23 +201,22 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 </style>
 </head>
 <body>
-
 <div class="shell">
+
   <header>
     <div class="logo">photo<span>pick</span></div>
     <div class="header-sep"></div>
-    <div class="header-meta" id="headerMeta">cargando…</div>
-    <button class="btn-cfg" onclick="openModal()">⚙ configurar Drive</button>
+    <div class="header-meta" id="headerMeta">—</div>
+    <button class="btn-cfg" onclick="openModal()">⚙ API Keys</button>
   </header>
 
   <div class="body">
-    <!-- Left panel -->
+    <!-- Left -->
     <div class="left">
-      <!-- Client selector -->
       <div class="client-selector">
         <div class="client-bar">
           <div class="client-bar-label">Cliente</div>
-          <button class="btn-add-client" onclick="openClientModal()">+ agregar</button>
+          <button class="btn-sm" onclick="openClientModal()">+ agregar</button>
         </div>
         <select class="client-select" id="clientSelect" onchange="onClientChange()">
           <option value="">— elegí un cliente —</option>
@@ -242,25 +224,25 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
       </div>
 
       <div class="panel-label">Temáticas de la semana</div>
-      <div class="themes-input-wrap">
+      <div class="themes-wrap">
         <textarea id="themesInput" placeholder="Pegá los títulos de Notion, uno por línea:
 
 Happy Hour
 Brunch
 Mother's Day
-Churros
-Anniversary"></textarea>
-        <div class="hint">Copiá los títulos de las cards de <b>Notion</b> y pegálos acá. Una temática por línea.</div>
+Live Music
+F1 Weekend"></textarea>
+        <div class="hint">Copiá los títulos de las cards de <b>Notion</b> y pegálos acá.</div>
         <button class="btn-search" id="searchBtn" onclick="startSearch()">
-          <span>✦</span>
-          <span id="searchBtnText">Buscar fotos con IA</span>
+          <span>✦</span><span id="searchBtnText">Buscar fotos</span>
         </button>
       </div>
+
       <hr class="divider" />
       <div class="themes-list" id="themesList"></div>
     </div>
 
-    <!-- Right panel -->
+    <!-- Right -->
     <div class="right">
       <div class="right-header" id="rightHeader" style="display:none;">
         <div class="right-title" id="rightTitle"></div>
@@ -271,34 +253,29 @@ Anniversary"></textarea>
         <div class="state-box">
           <div class="state-icon">📷</div>
           <div class="state-title">Listo para buscar</div>
-          <div class="state-sub">Pegá las temáticas a la izquierda y apretá "Buscar fotos con IA". La IA va a rankear las fotos de tu Drive para cada una.</div>
+          <div class="state-sub">Elegí un cliente, pegá las temáticas de Notion y apretá "Buscar fotos".</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Config modal -->
-<div class="overlay hidden" id="modal">
+<!-- API Keys modal -->
+<div class="overlay hidden" id="cfgModal">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-head-title">Configurar Drive</div>
+      <div class="modal-title">API Keys</div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
       <div class="field">
         <div class="field-label">Google Drive API Key</div>
-        <div class="field-hint">
-          Gratis en <code>console.cloud.google.com</code> → Crear proyecto → Habilitar "Google Drive API" → Credenciales → Crear clave de API.
-        </div>
+        <div class="field-hint">Gratis en <code>console.cloud.google.com</code> → APIs → Google Drive API → Credenciales → Crear clave.</div>
         <input class="field-input" id="driveKeyInput" type="password" placeholder="AIzaSy..." />
       </div>
       <div class="field">
-        <div class="field-label">Anthropic API Key (ranking visual con IA)</div>
-        <div class="field-hint">
-          En <code>console.anthropic.com</code> → API Keys → Create key.<br>
-          Sin esta clave rankea por nombre de archivo + sinónimos.
-        </div>
+        <div class="field-label">Anthropic API Key <span style="color:var(--text3)">(opcional — ranking visual con IA)</span></div>
+        <div class="field-hint">En <code>console.anthropic.com</code> → API Keys → Create key. Sin esta clave rankea por nombre + sinónimos.</div>
         <input class="field-input" id="anthropicKeyInput" type="password" placeholder="sk-ant-..." />
       </div>
     </div>
@@ -309,17 +286,11 @@ Anniversary"></textarea>
   </div>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast">
-  <div class="toast-dot"></div>
-  <span id="toastMsg"></span>
-</div>
-
 <!-- Add client modal -->
 <div class="overlay hidden" id="clientModal">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-head-title">Agregar cliente</div>
+      <div class="modal-title">Agregar cliente</div>
       <button class="modal-close" onclick="closeClientModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -329,9 +300,7 @@ Anniversary"></textarea>
       </div>
       <div class="field">
         <div class="field-label">ID de carpeta de Google Drive</div>
-        <div class="field-hint">
-          Abrí la carpeta del cliente en Drive. En la URL: <code>drive.google.com/drive/folders/<b>ESTE-ES-EL-ID</b></code>
-        </div>
+        <div class="field-hint">URL de la carpeta: <code>drive.google.com/drive/folders/<b>ESTE-ES-EL-ID</b></code></div>
         <input class="field-input" id="clientFolderInput" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs" />
       </div>
     </div>
@@ -342,101 +311,98 @@ Anniversary"></textarea>
   </div>
 </div>
 
+<!-- Toast -->
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
+
 <script>
-// ── Config & Clients ─────────────────────────────
+// ══════════════════════════════════════════════
+//  CONFIG & CLIENTS
+// ══════════════════════════════════════════════
 let CFG = JSON.parse(localStorage.getItem('pp_cfg') || '{}');
 let CLIENTS = JSON.parse(localStorage.getItem('pp_clients') || '[]');
 
-// Pre-load real clients if empty
 if (CLIENTS.length === 0) {
   CLIENTS = [
-    { id: 'baires', name: 'Baires Grill', folder: '1a8pdT0g9K_ONOB_3xWpI9-VyF2shtAZM' },
-    { id: 'corazon', name: 'Corazon', folder: '1rym5MN6fvTz2HO9msEPOx-3b3RdQHcV2' },
-    { id: 'eclipse', name: 'Eclipse Di Luna', folder: '1GzFDXGtVMTSCIputJuL9Ya2-CiPEDel4' },
+    { id: 'baires',  name: 'Baires Grill',    folder: '1a8pdT0g9K_ONOB_3xWpI9-VyF2shtAZM' },
+    { id: 'corazon', name: 'Corazon',          folder: '1rym5MN6fvTz2HO9msEPOx-3b3RdQHcV2' },
+    { id: 'eclipse', name: 'Eclipse Di Luna',  folder: '1GzFDXGtVMTSCIputJuL9Ya2-CiPEDel4' },
   ];
   localStorage.setItem('pp_clients', JSON.stringify(CLIENTS));
 }
 
 let activeClientId = CLIENTS[0]?.id || null;
-
 function saveClients() { localStorage.setItem('pp_clients', JSON.stringify(CLIENTS)); }
-
 function getActiveClient() { return CLIENTS.find(c => c.id === activeClientId) || null; }
 
 function renderClientSelect() {
   const sel = document.getElementById('clientSelect');
   sel.innerHTML = CLIENTS.length === 0
-    ? '<option value="">— agregá un cliente primero —</option>'
+    ? '<option value="">— agregá un cliente —</option>'
     : CLIENTS.map(c => `<option value="${c.id}" ${c.id === activeClientId ? 'selected' : ''}>${c.name}</option>`).join('');
 }
 
 function onClientChange() {
   activeClientId = document.getElementById('clientSelect').value;
-  themes = [];
-  activeIdx = null;
-  renderSidebar();
-  renderPhotos();
+  themes = []; activeIdx = null;
+  renderSidebar(); renderPhotos();
   updateHeaderMeta();
   document.getElementById('themesInput').value = '';
 }
 
 function updateHeaderMeta() {
   const c = getActiveClient();
-  document.getElementById('headerMeta').textContent = c ? c.name : 'sin cliente';
+  document.getElementById('headerMeta').textContent = c ? c.name : '—';
 }
 
-// Client modal
+// Modals
+function openModal() {
+  document.getElementById('driveKeyInput').value = CFG.driveKey || '';
+  document.getElementById('anthropicKeyInput').value = CFG.anthropicKey || '';
+  document.getElementById('cfgModal').classList.remove('hidden');
+}
+function closeModal() { document.getElementById('cfgModal').classList.add('hidden'); }
+function saveConfig() {
+  CFG.driveKey = document.getElementById('driveKeyInput').value.trim();
+  CFG.anthropicKey = document.getElementById('anthropicKeyInput').value.trim();
+  localStorage.setItem('pp_cfg', JSON.stringify(CFG));
+  closeModal(); toast('Configuración guardada ✓');
+}
+
 function openClientModal() {
   document.getElementById('clientNameInput').value = '';
   document.getElementById('clientFolderInput').value = '';
   document.getElementById('clientModal').classList.remove('hidden');
-  setTimeout(() => document.getElementById('clientNameInput').focus(), 100);
 }
 function closeClientModal() { document.getElementById('clientModal').classList.add('hidden'); }
 function saveClient() {
   const name = document.getElementById('clientNameInput').value.trim();
   const folder = document.getElementById('clientFolderInput').value.trim();
   if (!name) { toast('Escribí el nombre del cliente'); return; }
-  if (!folder) { toast('Pegá el ID de la carpeta de Drive'); return; }
+  if (!folder) { toast('Pegá el ID de la carpeta'); return; }
   const id = 'c_' + Date.now();
   CLIENTS.push({ id, name, folder });
-  saveClients();
-  activeClientId = id;
-  renderClientSelect();
-  updateHeaderMeta();
-  closeClientModal();
+  saveClients(); activeClientId = id;
+  renderClientSelect(); updateHeaderMeta(); closeClientModal();
   toast(`✓ ${name} agregado`);
 }
 
-// Settings modal (API keys only)
-function openModal() {
-  document.getElementById('driveKeyInput').value = CFG.driveKey || '';
-  document.getElementById('anthropicKeyInput').value = CFG.anthropicKey || '';
-  document.getElementById('modal').classList.remove('hidden');
-}
-function closeModal() { document.getElementById('modal').classList.add('hidden'); }
-function saveConfig() {
-  CFG.driveKey = document.getElementById('driveKeyInput').value.trim();
-  CFG.anthropicKey = document.getElementById('anthropicKeyInput').value.trim();
-  localStorage.setItem('pp_cfg', JSON.stringify(CFG));
-  closeModal();
-  toast('Configuración guardada ✓');
-}
-
 // Init
-renderClientSelect();
-updateHeaderMeta();
+renderClientSelect(); updateHeaderMeta();
 
-// ── State ────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
 let themes = [];
 let activeIdx = null;
 
 function parseThemes() {
   return document.getElementById('themesInput').value
-    .split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    .split('\n').map(l => l.trim()).filter(Boolean);
 }
 
-// ── Sidebar ──────────────────────────────────────
+// ══════════════════════════════════════════════
+//  SIDEBAR
+// ══════════════════════════════════════════════
 function renderSidebar() {
   const list = document.getElementById('themesList');
   if (!themes.length) { list.innerHTML = ''; return; }
@@ -444,18 +410,18 @@ function renderSidebar() {
     <div class="theme-row ${activeIdx === i ? 'active' : ''}" onclick="selectTheme(${i})">
       <div class="theme-dot ${t.status === 'done' ? 'done' : t.status === 'loading' ? 'loading' : ''}"></div>
       <div class="theme-name">${t.name}</div>
-      <div class="theme-count">${t.status === 'done' ? t.photos.length + ' fotos' : t.status === 'loading' ? '…' : ''}</div>
+      <div class="theme-count">${t.status === 'done' ? (t.photos.length ? '✓' : '—') : t.status === 'loading' ? '…' : ''}</div>
     </div>
   `).join('');
 }
 
 function selectTheme(i) {
-  activeIdx = i;
-  renderSidebar();
-  renderPhotos();
+  activeIdx = i; renderSidebar(); renderPhotos();
 }
 
-// ── Photos ───────────────────────────────────────
+// ══════════════════════════════════════════════
+//  PHOTOS RENDER — featured layout
+// ══════════════════════════════════════════════
 function renderPhotos() {
   const area = document.getElementById('photosArea');
   const header = document.getElementById('rightHeader');
@@ -463,7 +429,7 @@ function renderPhotos() {
 
   if (!t) {
     header.style.display = 'none';
-    area.innerHTML = `<div class="state-box"><div class="state-icon">👈</div><div class="state-title">Seleccioná una temática</div></div>`;
+    area.innerHTML = `<div class="state-box"><div class="state-icon">👈</div><div class="state-title">Elegí una temática</div></div>`;
     return;
   }
 
@@ -471,38 +437,57 @@ function renderPhotos() {
   document.getElementById('rightTitle').textContent = t.name;
 
   if (t.status === 'loading') {
-    document.getElementById('rightSub').textContent = 'analizando fotos…';
-    area.innerHTML = `<div class="state-box"><div class="state-icon">🔍</div><div class="state-title">Buscando fotos…</div><div class="state-sub">La IA está analizando las imágenes del Drive y eligiendo las más relevantes para <em>"${t.name}"</em>.</div></div>`;
+    document.getElementById('rightSub').textContent = 'buscando fotos…';
+    area.innerHTML = `<div class="state-box"><div class="state-icon">🔍</div><div class="state-title">Analizando fotos…</div><div class="state-sub">Buscando las mejores fotos para <em>"${t.name}"</em> en el Drive.</div></div>`;
     return;
   }
 
   if (t.status === 'done' && !t.photos.length) {
     document.getElementById('rightSub').textContent = 'sin resultados';
-    area.innerHTML = `<div class="state-box"><div class="state-icon">🤷</div><div class="state-title">Sin fotos</div><div class="state-sub">No se encontraron imágenes en la carpeta. Verificá que esté compartida como pública y que tenga fotos adentro.</div></div>`;
+    area.innerHTML = `<div class="state-box"><div class="state-icon">🤷</div><div class="state-title">Sin fotos</div><div class="state-sub">No se encontraron imágenes. Verificá que la carpeta esté compartida como pública.</div></div>`;
     return;
   }
 
   if (t.status === 'done') {
-    document.getElementById('rightSub').textContent = `${t.photos.length} fotos rankeadas — hacé clic para copiar al portapapeles y pegar en Figma`;
-    area.innerHTML = `<div class="photos-grid">${
-      t.photos.map((p, idx) => `
-        <div class="photo-card ${t.selected === idx ? 'selected' : ''}" onclick="copyPhoto(${activeIdx}, ${idx})">
-          <img src="${p.thumb}" alt="${p.name}" loading="lazy" onerror="this.style.opacity='0.3'" />
-          <div class="photo-card-body">
-            <div class="photo-card-name" title="${p.name}">${p.name}</div>
-            <div class="photo-card-score">${p.score}% match</div>
+    const [main, ...alts] = t.photos;
+    const altSlice = alts.slice(0, 3);
+    document.getElementById('rightSub').textContent = `Hacé clic en la foto para copiarla y pegarla en Figma`;
+
+    area.innerHTML = `
+      <div class="featured-block">
+        <div class="featured-label">⭐ Foto sugerida</div>
+        <div class="featured-row">
+          <!-- Main featured -->
+          <div class="photo-card-featured ${t.selected === 0 ? 'selected' : ''}" onclick="copyPhoto(${activeIdx}, 0)">
+            <img src="${main.thumb}" alt="${main.name}" onerror="this.style.opacity='.2'" />
+            <div class="card-body">
+              <div class="card-name">${main.name}</div>
+              <div class="card-badge">mejor opción</div>
+            </div>
+            <div class="copy-overlay"><div class="copy-icon">⎘</div><div class="copy-label">copiada — pegá en Figma</div></div>
           </div>
-          <div class="copy-overlay">
-            <div class="copy-icon">⎘</div>
-            <div class="copy-label">copiada — pegá en Figma</div>
+          <!-- Alts -->
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            ${altSlice.map((p, idx) => `
+              <div class="photo-card-alt ${t.selected === idx + 1 ? 'selected' : ''}" onclick="copyPhoto(${activeIdx}, ${idx + 1})" style="flex:1;">
+                <img src="${p.thumb}" alt="${p.name}" onerror="this.style.opacity='.2'" style="height:100%; min-height:80px;" />
+                <div class="card-body">
+                  <div class="card-name">${p.name}</div>
+                  <div class="card-score">alternativa ${idx + 1}</div>
+                </div>
+                <div class="copy-overlay"><div class="copy-icon">⎘</div><div class="copy-label">copiar</div></div>
+              </div>
+            `).join('')}
           </div>
         </div>
-      `).join('')
-    }</div>`;
+      </div>
+    `;
   }
 }
 
-// ── Search ───────────────────────────────────────
+// ══════════════════════════════════════════════
+//  SEARCH
+// ══════════════════════════════════════════════
 async function startSearch() {
   const names = parseThemes();
   if (!names.length) { toast('Pegá al menos una temática'); return; }
@@ -512,26 +497,24 @@ async function startSearch() {
 
   themes = names.map(name => ({ name, status: 'pending', photos: [], selected: null }));
   activeIdx = 0;
-  renderSidebar();
-  renderPhotos();
+  renderSidebar(); renderPhotos();
 
   const btn = document.getElementById('searchBtn');
   btn.disabled = true;
   document.getElementById('searchBtnText').textContent = 'Buscando…';
-
-  // Progress bar animation
   const bar = document.getElementById('loadBar');
-  bar.style.width = '10%';
+  bar.style.width = '8%';
 
   let allFiles = [];
   try {
+    toast('Accediendo al Drive…');
     allFiles = await fetchDriveFiles(client.folder, CFG.driveKey);
     toast(`${allFiles.length} fotos encontradas en Drive`);
     bar.style.width = '20%';
   } catch(e) {
-    toast('❌ Error al acceder a Drive: ' + e.message);
+    toast('❌ ' + e.message);
     btn.disabled = false;
-    document.getElementById('searchBtnText').textContent = 'Buscar fotos con IA';
+    document.getElementById('searchBtnText').textContent = 'Buscar fotos';
     bar.style.width = '0%';
     return;
   }
@@ -542,7 +525,7 @@ async function startSearch() {
     renderSidebar();
 
     try {
-      themes[i].photos = await rankPhotosForTheme(allFiles, themes[i].name, CFG.anthropicKey);
+      themes[i].photos = await rankPhotos(allFiles, themes[i].name, CFG.anthropicKey);
       themes[i].status = 'done';
     } catch(e) {
       themes[i].photos = [];
@@ -555,166 +538,174 @@ async function startSearch() {
     renderSidebar();
   }
 
-  setTimeout(() => { bar.style.width = '0%'; }, 800);
+  setTimeout(() => { bar.style.width = '0%'; }, 1000);
   btn.disabled = false;
-  document.getElementById('searchBtnText').textContent = 'Buscar fotos con IA';
-  toast('¡Listo! Hacé clic en cada foto para copiarla ✓');
+  document.getElementById('searchBtnText').textContent = 'Buscar fotos';
+  toast('¡Listo! Hacé clic en la foto para copiarla a Figma ✓');
 }
 
-// ── Drive API ────────────────────────────────────
+// ══════════════════════════════════════════════
+//  DRIVE — RECURSIVE FETCH
+// ══════════════════════════════════════════════
 async function fetchDriveFiles(folderId, apiKey) {
-  const fields = 'nextPageToken,files(id,name,thumbnailLink,mimeType)';
+  const all = [];
+  await fetchRecursive(folderId, apiKey, all, 0);
+  return all;
+}
+
+async function fetchRecursive(folderId, apiKey, all, depth) {
+  if (depth > 6) return;
+  const kp = apiKey ? `&key=${apiKey}` : '';
+
+  // Images in this folder
   const mimes = "(mimeType='image/jpeg' or mimeType='image/png' or mimeType='image/webp')";
-  const q = encodeURIComponent(`'${folderId}' in parents and trashed=false and ${mimes}`);
-  let files = [], pageToken = '';
-
+  const iq = encodeURIComponent(`'${folderId}' in parents and trashed=false and ${mimes}`);
+  let pt = '';
   do {
-    const keyParam = apiKey ? `&key=${apiKey}` : '';
-    const pageParam = pageToken ? `&pageToken=${pageToken}` : '';
-    const url = `https://www.googleapis.com/drive/v3/files?q=${q}&fields=${encodeURIComponent(fields)}&pageSize=100${keyParam}${pageParam}`;
-    const resp = await fetch(url);
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `HTTP ${resp.status} — configurá una Google Drive API Key`);
-    }
-    const data = await resp.json();
-    files = files.concat(data.files || []);
-    pageToken = data.nextPageToken || '';
-  } while (pageToken);
+    const url = `https://www.googleapis.com/drive/v3/files?q=${iq}&fields=${encodeURIComponent('nextPageToken,files(id,name,thumbnailLink,mimeType)')}&pageSize=100${kp}${pt ? '&pageToken=' + pt : ''}`;
+    const r = await fetch(url);
+    if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e?.error?.message || `HTTP ${r.status} — configurá una Drive API Key`); }
+    const d = await r.json();
+    all.push(...(d.files || []));
+    pt = d.nextPageToken || '';
+  } while (pt);
 
-  return files;
-}
-
-// ── Rank photos ──────────────────────────────────
-async function rankPhotosForTheme(files, theme, anthropicKey) {
-  if (!files.length) return [];
-
-  let scored = files.map(f => ({
-    id: f.id,
-    name: f.name,
-    thumb: f.thumbnailLink
-      ? f.thumbnailLink.replace('=s220', '=s400')
-      : `https://drive.google.com/thumbnail?id=${f.id}&sz=w400`,
-    driveUrl: `https://drive.google.com/file/d/${f.id}/view`,
-    score: scoreByName(f.name, theme)
-  }));
-
-  if (anthropicKey) {
-    const byName = [...scored].sort((a, b) => b.score - a.score);
-    const candidates = byName.slice(0, 15);
-    try {
-      const aiScores = await aiRankPhotos(candidates, theme, anthropicKey);
-      candidates.forEach((c, i) => {
-        if (aiScores[i] !== undefined) {
-          c.score = Math.round(aiScores[i] * 0.8 + c.score * 0.2);
-        }
-      });
-      const candIds = new Set(candidates.map(c => c.id));
-      scored = [...candidates, ...scored.filter(s => !candIds.has(s.id))];
-    } catch(e) {
-      console.warn('AI ranking skipped:', e.message);
-    }
+  // Subfolders — recurse
+  const fq = encodeURIComponent(`'${folderId}' in parents and trashed=false and mimeType='application/vnd.google-apps.folder'`);
+  const fr = await fetch(`https://www.googleapis.com/drive/v3/files?q=${fq}&fields=files(id,name)&pageSize=50${kp}`);
+  if (!fr.ok) return;
+  const fd = await fr.json();
+  for (const sub of (fd.files || [])) {
+    await fetchRecursive(sub.id, apiKey, all, depth + 1);
   }
-
-  return scored.sort((a, b) => b.score - a.score).slice(0, 12);
 }
 
-// ── Synonym dictionary ───────────────────────────
+// ══════════════════════════════════════════════
+//  SYNONYM DICTIONARY
+// ══════════════════════════════════════════════
 const SYNONYMS = {
   // Drinks & bar
-  'happy hour':   ['cocktail','drink','bar','copa','trago','cerveza','wine','vino','beer','spirits','liquor','martini','margarita','mojito','aperitivo','aperitif','gin','whiskey','champagne','prosecco','sangria','mixology'],
-  'cocktail':     ['drink','bar','copa','trago','martini','margarita','mojito','gin','whiskey','spirits','mixology','shaker','aperitivo'],
-  'drinks':       ['cocktail','beverage','copa','trago','bar','wine','vino','beer','cerveza','soda','juice','jugo'],
-  'wine':         ['vino','copa','tinto','blanco','rose','rosé','sommelier','bottle','botella','vineyard','bodega'],
-  'beer':         ['cerveza','draft','pint','craft','brewery','lager','ipa','ale'],
+  'happy hour':    ['cocktail','drink','bar','copa','trago','cerveza','wine','vino','beer','martini','margarita','mojito','aperitivo','gin','whiskey','champagne','prosecco','sangria','mixology','spirits'],
+  'cocktail':      ['drink','bar','copa','trago','martini','margarita','mojito','gin','whiskey','shaker','aperitivo','mixology'],
+  'wine':          ['vino','copa','tinto','blanco','rosé','rose','sommelier','bottle','botella','vineyard'],
+  'beer':          ['cerveza','draft','pint','craft','lager','ipa','ale','baires beer','michelada'],
+  'baires beer':   ['beer','cerveza','draft','pint','craft','lager','ipa','cold','refreshing','mug','glass'],
+  'cheers':        ['brindis','toast','celebration','copa','glass','champagne','friends','group','cheers and chill'],
+  'cheers and chill': ['drinks','cocktail','relax','cozy','friends','copa','bar','evening','night'],
+  'cheers & chill':   ['drinks','cocktail','relax','cozy','friends','copa','bar','evening','night'],
+  'wine monday':   ['wine','vino','copa','monday','lunes','red','tinto','white','blanco','glass','bottle'],
 
   // Brunch & breakfast
-  'brunch':       ['eggs','huevos','pancake','waffle','french toast','tostada','avocado','palta','mimosa','breakfast','desayuno','bacon','benedict','smoked salmon','granola','yogurt','croissant','juice','jugo','coffee','cafe'],
-  'breakfast':    ['eggs','huevos','pancake','waffle','tostada','bacon','croissant','coffee','cafe','juice','granola','yogurt','desayuno','omelet'],
-  'sunday brunch':['eggs','huevos','pancake','waffle','mimosa','bloody mary','brunch','benedict','avocado','palta','salmon'],
+  'brunch':        ['eggs','huevos','pancake','waffle','french toast','avocado','palta','mimosa','breakfast','desayuno','bacon','benedict','salmon','granola','croissant','juice','coffee'],
+  'breakfast':     ['eggs','huevos','pancake','bacon','croissant','coffee','juice','granola','desayuno','omelet'],
+  'sunday brunch': ['eggs','mimosa','bloody mary','benedict','avocado','salmon','waffle','pancake'],
+  'lunch':         ['almuerzo','midday','sandwich','salad','ensalada','soup','sopa','plate','plato','burger'],
 
   // Special occasions
-  "mother's day": ['flowers','flores','floral','bouquet','mom','madre','celebration','celebracion','brunch','pink','rosa','elegant','regalo','gift','love','amor','family','familia'],
-  'mothers day':  ['flowers','flores','floral','bouquet','mom','madre','celebration','brunch','pink','rosa','elegant','family'],
-  'anniversary':  ['celebration','celebracion','couple','pareja','romantic','romantico','candle','vela','champagne','flowers','flores','elegant','fine dining','special'],
-  'birthday':     ['cake','torta','celebration','celebracion','candle','vela','party','fiesta','balloon','happy','champagne','flowers','flores','confetti'],
-  'valentines':   ['romantic','romantico','red','rojo','roses','rosas','heart','corazon','couple','pareja','candle','vela','love','amor','champagne'],
-  'date night':   ['romantic','romantico','candle','vela','couple','pareja','elegant','fine dining','wine','vino','intimate','dinner','cena'],
-  'girls night':  ['friends','amigas','fun','cocktail','drinks','celebration','cheers','brindis','group','grupo'],
-  'cheers':       ['brindis','toast','celebration','celebracion','copa','glass','drink','champagne','friends','amigas','group'],
+  "mother's day":  ['flowers','flores','floral','bouquet','mom','madre','celebration','brunch','pink','rosa','elegant','family','familia','love','amor'],
+  'mothers day':   ['flowers','flores','floral','bouquet','mom','madre','celebration','brunch','pink','rosa','elegant'],
+  'anniversary':   ['celebration','couple','pareja','romantic','romantico','candle','vela','champagne','flowers','elegant','special'],
+  'birthday':      ['cake','torta','celebration','candle','vela','party','fiesta','balloon','champagne','flowers','confetti'],
+  'valentines':    ['romantic','red','rojo','roses','rosas','heart','couple','candle','love','champagne'],
+  'date night':    ['romantic','candle','vela','couple','elegant','fine dining','wine','intimate','dinner','cena'],
+  'girls night':   ['friends','amigas','fun','cocktail','drinks','celebration','cheers','group'],
+  'made with love':['handmade','artisan','chef','cooking','kitchen','fresh','homemade','casero','heart','love'],
 
-  // Food items
-  'churros':      ['churro','dessert','postre','chocolate','frito','fried','sweet','dulce','cinnamon','canela','sugar','azucar'],
-  'nigiri':       ['sushi','fish','pescado','rice','arroz','japanese','japones','tuna','atun','salmon','seafood','mariscos','nori'],
-  'burrata':      ['cheese','queso','italian','italiano','caprese','tomato','tomate','mozzarella','fresh','fresco','salad','ensalada'],
-  'eggs':         ['huevos','benedict','yolk','yema','omelet','scrambled','fried','poached','breakfast','brunch'],
-  'sushi':        ['nigiri','roll','maki','fish','pescado','rice','arroz','japanese','japones','seafood','tuna','salmon','nori'],
-  'pasta':        ['italian','italiano','spaghetti','fettuccine','penne','sauce','salsa','carbonara','bolognese','alfredo'],
-  'steak':        ['carne','meat','beef','grill','parrilla','medium','rare','wagyu','filet','ribeye'],
-  'dessert':      ['postre','cake','torta','sweet','dulce','chocolate','ice cream','helado','tart','mousse','tiramisu'],
-  'pizza':        ['dough','masa','mozzarella','tomato','tomate','italian','italiano','slice','slice','baked','hornear'],
+  // Food
+  'churros':       ['churro','dessert','postre','chocolate','fried','sweet','dulce','cinnamon','sugar'],
+  'nigiri':        ['sushi','fish','pescado','rice','arroz','japanese','tuna','salmon','seafood','nori'],
+  'burrata':       ['cheese','queso','italian','caprese','tomato','tomate','mozzarella','fresh','salad'],
+  'gnocci':        ['gnocchi','pasta','italian','sauce','salsa','potato','papa','homemade'],
+  'pasta':         ['italian','spaghetti','fettuccine','penne','sauce','carbonara','bolognese'],
+  'steak':         ['carne','meat','beef','grill','parrilla','wagyu','filet','ribeye','medium','rare'],
+  'dessert':       ['postre','cake','torta','sweet','chocolate','ice cream','helado','tart','mousse'],
+  'heels & bows':  ['elegant','fashion','chic','upscale','cocktail','stylish','dressed','glamour','night out'],
+  'heels and bows':['elegant','fashion','chic','upscale','cocktail','stylish','dressed','glamour'],
 
-  // Dining experiences
-  'fine dining':  ['elegant','elegante','plating','presentacion','white tablecloth','candle','vela','formal','upscale','luxury','lujo','chef'],
-  'tasting menu': ['degustation','courses','chef','plating','elegant','fine dining','gourmet','artisan'],
-  'kali dining':  ['dining room','restaurant','interior','elegant','table','mesa','ambience','ambiente','decor'],
-  'dining room':  ['interior','restaurant','table','mesa','chairs','sillas','ambience','ambiente','decor','elegant','lighting','iluminacion'],
+  // Events & entertainment
+  'live music':    ['music','musica','band','musician','guitar','stage','performance','night','show','concert'],
+  'f1 weekend':    ['racing','race','formula','car','speed','sport','event','screen','watch party','flag'],
+  'saturday':      ['weekend','fin de semana','brunch','night','noche','party','fiesta','fun','crowd'],
+  'the art of hands': ['hands','manos','cooking','chef','craft','detail','artisan','handmade','kitchen'],
 
-  // Promotions & content
-  'tell a story': ['lifestyle','people','person','persona','dining','experience','moment','momento','candid','authentic'],
-  'promotion':    ['deal','offer','oferta','special','especial','discount','descuento','promo'],
-  'closed':       ['cerrado','closed','door','puerta','sign','cartel'],
-  'new menu':     ['menu','dish','plato','new','nuevo','seasonal','temporada','chef','special'],
+  // Dining & atmosphere
+  'fine dining':   ['elegant','plating','presentacion','candle','formal','upscale','luxury','chef','white'],
+  'dining room':   ['interior','restaurant','table','mesa','chairs','ambience','decor','elegant','lighting'],
+  'kali dining':   ['dining room','restaurant','interior','elegant','table','ambience','decor'],
+  'locations':     ['exterior','facade','building','street','entrance','sign','outdoor','location','local'],
+
+  // Baires Grill locations (Miami)
+  'las olas':      ['las olas','fortlauderdale','fort lauderdale','waterfront','canal','outdoor','patio'],
+  'new york':      ['new york','nyc','manhattan','urban','city','cosmopolitan','metropolitan'],
+  'orlando':       ['orlando','florida','resort','tourist','theme park','vacation'],
+  'miami':         ['miami','brickell','wynwood','beach','tropical','south beach','florida'],
+  'brickell':      ['brickell','miami','downtown','skyline','urban','city','financial'],
+  'coral gables':  ['coral gables','miami','upscale','mediterranean','elegant','gables'],
+  'doral':         ['doral','miami','suburb','family','community'],
+  'aventura':      ['aventura','miami','mall','upscale','north miami'],
 };
 
 function scoreByName(name, theme) {
   const n = name.toLowerCase().replace(/[-_.]/g, ' ');
   const t = theme.toLowerCase().trim();
-  let score = 15; // base
+  let score = 15;
 
-  // Direct theme words match
-  const themeWords = t.split(/\s+/).filter(w => w.length >= 3);
-  themeWords.forEach(w => {
-    if (n.includes(w)) score += 35;
-  });
+  // Direct theme word match
+  t.split(/\s+/).filter(w => w.length >= 3).forEach(w => { if (n.includes(w)) score += 35; });
+  if (n.includes(t)) score += 20;
 
-  // Full theme match (exact)
-  if (n.includes(t)) score += 25;
-
-  // Synonym match — find best synonym group for this theme
-  let synonyms = [];
-
-  // Try exact theme key
-  if (SYNONYMS[t]) {
-    synonyms = SYNONYMS[t];
-  } else {
-    // Try partial match on keys
+  // Synonym matches
+  let synonyms = SYNONYMS[t] || [];
+  if (!synonyms.length) {
     for (const [key, syns] of Object.entries(SYNONYMS)) {
-      if (t.includes(key) || key.includes(t) || themeWords.some(w => key.includes(w))) {
+      if (t.includes(key) || key.includes(t) || t.split(/\s+/).some(w => w.length > 3 && key.includes(w))) {
         synonyms = synonyms.concat(syns);
       }
     }
   }
-
-  // Score synonym matches (worth less than direct match)
-  synonyms.forEach(syn => {
-    if (n.includes(syn.toLowerCase())) score += 18;
-  });
+  synonyms.forEach(syn => { if (n.includes(syn.toLowerCase())) score += 15; });
 
   return Math.min(score, 95);
 }
 
-async function aiRankPhotos(candidates, theme, anthropicKey) {
+// ══════════════════════════════════════════════
+//  RANK PHOTOS
+// ══════════════════════════════════════════════
+async function rankPhotos(files, theme, anthropicKey) {
+  if (!files.length) return [];
+
+  let scored = files.map(f => ({
+    id: f.id, name: f.name,
+    thumb: f.thumbnailLink ? f.thumbnailLink.replace('=s220', '=s400') : `https://drive.google.com/thumbnail?id=${f.id}&sz=w400`,
+    driveUrl: `https://drive.google.com/file/d/${f.id}/view`,
+    score: scoreByName(f.name, theme)
+  }));
+
+  // If Anthropic key available, use vision AI on top candidates
+  if (anthropicKey) {
+    const top = [...scored].sort((a,b) => b.score - a.score).slice(0, 12);
+    try {
+      const aiScores = await aiRank(top, theme, anthropicKey);
+      top.forEach((c, i) => {
+        if (aiScores[i] !== undefined) c.score = Math.round(aiScores[i] * 0.85 + c.score * 0.15);
+      });
+      const ids = new Set(top.map(c => c.id));
+      scored = [...top, ...scored.filter(s => !ids.has(s.id))];
+    } catch(e) { console.warn('AI rank skipped:', e.message); }
+  }
+
+  // Return top 4 (1 featured + 3 alts)
+  return scored.sort((a,b) => b.score - a.score).slice(0, 4);
+}
+
+async function aiRank(candidates, theme, anthropicKey) {
   const images = [];
   for (const c of candidates) {
     try {
       const r = await fetch(c.thumb);
       const blob = await r.blob();
       const b64 = await new Promise((res, rej) => {
-        const fr = new FileReader();
-        fr.onload = () => res(fr.result.split(',')[1]);
-        fr.onerror = rej;
-        fr.readAsDataURL(blob);
+        const fr = new FileReader(); fr.onload = () => res(fr.result.split(',')[1]); fr.onerror = rej; fr.readAsDataURL(blob);
       });
       images.push({ b64, type: blob.type || 'image/jpeg' });
     } catch(e) { images.push(null); }
@@ -724,70 +715,71 @@ async function aiRankPhotos(candidates, theme, anthropicKey) {
   if (!valid.length) return [];
 
   const content = [
-    {
-      type: 'text',
-      text: `Sos un asistente para una agencia de social media de restaurantes. Tenés ${valid.length} fotos de un restaurante.
+    { type: 'text', text: `Sos asistente de una agencia de social media de restaurantes. Tenés ${valid.length} fotos.
 
-Para cada foto, dame un score del 0 al 100 según qué tan bien sirve para una historia de Instagram con la temática: "${theme}".
-
+Dá un score 0-100 de qué tan bien sirve cada foto para una historia de Instagram con temática: "${theme}".
 - 90-100: perfecta para esta temática
-- 70-89: muy buena y relacionada
-- 50-69: relacionada pero no ideal  
-- 20-49: foto de restaurante pero genérica
+- 70-89: muy relevante
+- 50-69: relacionada pero no ideal
+- 20-49: genérica de restaurante
 - 0-19: no relacionada
 
-Respondé SOLO con JSON válido, sin texto extra ni backticks:
-{"scores":[85,42,91,...]}`
-    },
-    ...valid.map(img => ({
-      type: 'image',
-      source: { type: 'base64', media_type: img.type, data: img.b64 }
-    }))
+Respondé SOLO JSON sin texto extra: {"scores":[85,42,91,...]}` },
+    ...valid.map(img => ({ type: 'image', source: { type: 'base64', media_type: img.type, data: img.b64 } }))
   ];
 
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': anthropicKey,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 300,
-      messages: [{ role: 'user', content }]
-    })
+    headers: { 'Content-Type': 'application/json', 'x-api-key': anthropicKey, 'anthropic-version': '2023-06-01' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 200, messages: [{ role: 'user', content }] })
   });
-
-  if (!resp.ok) throw new Error('Anthropic API error ' + resp.status);
+  if (!resp.ok) throw new Error('Anthropic ' + resp.status);
   const data = await resp.json();
   const text = data.content?.map(b => b.text || '').join('') || '';
-  const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-  return parsed.scores || [];
+  return JSON.parse(text.replace(/```json|```/g, '').trim()).scores || [];
 }
 
-// ── Copy ─────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  COPY TO CLIPBOARD
+// ══════════════════════════════════════════════
 async function copyPhoto(themeIdx, photoIdx) {
   const t = themes[themeIdx];
   const p = t.photos[photoIdx];
   if (!p) return;
-
   t.selected = photoIdx;
   renderPhotos();
+  toast('⏳ Copiando…');
 
+  // Method 1: fetch blob → clipboard
   try {
-    const resp = await fetch(p.thumb);
-    const blob = await resp.blob();
-    await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+    const r = await fetch(p.thumb);
+    const blob = await r.blob();
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
     toast(`✓ "${p.name}" copiada — pegá en Figma con Ctrl+V`);
     return;
-  } catch(e) { /* fallback */ }
+  } catch(e) {}
 
-  window.open(p.driveUrl, '_blank');
-  toast('Abriendo en Drive — arrastrá la foto a Figma');
+  // Method 2: canvas → blob → clipboard
+  try {
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = p.thumb; });
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    toast(`✓ "${p.name}" copiada — pegá en Figma con Ctrl+V`);
+    return;
+  } catch(e) {}
+
+  // Fallback: open full res in new tab
+  window.open(`https://drive.google.com/uc?export=view&id=${p.id}`, '_blank');
+  toast('Foto abierta en nueva pestaña — arrastrála a Figma');
 }
 
-// ── Toast ────────────────────────────────────────
+// ══════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════
 let toastTimer;
 function toast(msg) {
   const el = document.getElementById('toast');
