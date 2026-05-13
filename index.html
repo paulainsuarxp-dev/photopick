@@ -449,6 +449,7 @@ function deleteClient() {
   closeEditClientModal();
   toast('Cliente eliminado');
 }
+function openClientModal() {
   document.getElementById('clientNameInput').value = '';
   document.getElementById('clientFolderInput').value = '';
   document.getElementById('clientModal').classList.remove('hidden');
