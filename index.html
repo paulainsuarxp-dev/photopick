@@ -226,6 +226,7 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
         <div class="client-bar">
           <div class="client-bar-label">Cliente</div>
           <button class="btn-sm" onclick="openClientModal()">+ agregar</button>
+          <button class="btn-sm" onclick="openEditClientModal()">✎ editar</button>
         </div>
         <select class="client-select" id="clientSelect" onchange="onClientChange()">
           <option value="">— elegí un cliente —</option>
@@ -316,6 +317,32 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
   </div>
 </div>
 
+<!-- Edit client modal -->
+<div class="overlay hidden" id="editClientModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Editar cliente</div>
+      <button class="modal-close" onclick="closeEditClientModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <div class="field-label">Nombre del cliente</div>
+        <input class="field-input" id="editClientNameInput" placeholder="Ej: Baires Grill" />
+      </div>
+      <div class="field">
+        <div class="field-label">ID de carpeta de Google Drive</div>
+        <div class="field-hint">URL: <code>drive.google.com/drive/folders/<b>ESTE-ES-EL-ID</b></code></div>
+        <input class="field-input" id="editClientFolderInput" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs" />
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" style="color:#e05a4a; border-color:rgba(224,90,74,0.3);" onclick="deleteClient()">Eliminar</button>
+      <button class="btn-cancel" onclick="closeEditClientModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveEditClient()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
 
 <script>
@@ -384,7 +411,44 @@ function saveConfig() {
   localStorage.setItem('pp_cfg', JSON.stringify(CFG));
   closeModal(); toast('Configuración guardada ✓');
 }
-function openClientModal() {
+function openEditClientModal() {
+  const c = getActiveClient();
+  if (!c) { toast('Elegí un cliente para editar'); return; }
+  document.getElementById('editClientNameInput').value = c.name;
+  document.getElementById('editClientFolderInput').value = c.folder;
+  document.getElementById('editClientModal').classList.remove('hidden');
+}
+function closeEditClientModal() { document.getElementById('editClientModal').classList.add('hidden'); }
+function saveEditClient() {
+  const name = document.getElementById('editClientNameInput').value.trim();
+  const folder = document.getElementById('editClientFolderInput').value.trim();
+  if (!name) { toast('Escribí el nombre'); return; }
+  if (!folder) { toast('Pegá el ID de la carpeta'); return; }
+  const idx = CLIENTS.findIndex(c => c.id === activeClientId);
+  if (idx === -1) return;
+  CLIENTS[idx].name = name;
+  CLIENTS[idx].folder = folder;
+  saveClients();
+  renderClientSelect();
+  updateHeaderMeta();
+  closeEditClientModal();
+  toast(`✓ ${name} actualizado`);
+}
+function deleteClient() {
+  const c = getActiveClient();
+  if (!c) return;
+  if (!confirm(`¿Eliminar "${c.name}"?`)) return;
+  CLIENTS = CLIENTS.filter(cl => cl.id !== activeClientId);
+  saveClients();
+  activeClientId = CLIENTS[0]?.id || null;
+  renderClientSelect();
+  updateHeaderMeta();
+  themes = [];
+  renderSidebar();
+  renderFeed();
+  closeEditClientModal();
+  toast('Cliente eliminado');
+}
   document.getElementById('clientNameInput').value = '';
   document.getElementById('clientFolderInput').value = '';
   document.getElementById('clientModal').classList.remove('hidden');
