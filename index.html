@@ -683,6 +683,8 @@ const SYNONYMS = {
   'beer':             ['cerveza','draft','pint','craft','lager','ipa','ale'],
   'baires beer':      ['beer','cerveza','draft','pint','craft','cold','mug','glass'],
   'cheers':           ['brindis','toast','celebration','copa','glass','champagne','friends','group'],
+  'brindis':          ['toast','cheers','celebration','copa','glass','champagne','wine','beer','cocktail','drink','friends','clink'],
+  'brindis sin niños':['toast','cheers','adults','couple','friends','bar','cocktail','wine','champagne','copa','celebration'],
   'cheers and chill': ['drinks','cocktail','relax','cozy','friends','copa','bar','evening'],
   'cheers & chill':   ['drinks','cocktail','relax','cozy','friends','copa','bar','evening'],
   'wine monday':      ['wine','vino','copa','monday','red','tinto','white','blanco','glass','bottle'],
@@ -763,8 +765,12 @@ async function visionRank(candidates, theme, apiKey) {
   const themeWords = t.split(/\s+/).filter(w => w.length >= 3);
   const themeSyns = SYNONYMS[t] || [];
   const allKw = [...themeWords, ...themeSyns];
-  const familyLabels = ['child','children','kid','baby','family','toddler'];
-  const barLabels = ['cocktail','drink','alcohol','bar','beer','wine','glass','bottle'];
+
+  // Detectar palabras negativas en la temática
+  const noKids = t.includes('sin niños') || t.includes('sin ninos') || t.includes('no kids') || t.includes('adults') || t.includes('sin familia');
+  const familyLabels = ['child','children','kid','baby','toddler','infant','boy','girl','daughter','son'];
+  const barLabels = ['cocktail','drink','alcohol','bar','beer','wine','glass','bottle','cup'];
+  const isBarTheme = t.includes('happy hour') || t.includes('cocktail') || t.includes('bar') || t.includes('brindis') || t.includes('cheers') || t.includes('drink') || t.includes('wine') || t.includes('beer');
 
   return batch.map((c, i) => {
     const res = data.responses?.[i] || {};
@@ -773,15 +779,24 @@ async function visionRank(candidates, theme, apiKey) {
       ...(res.localizedObjectAnnotations || []).map(l => ({ desc: l.name.toLowerCase(), score: l.score })),
     ];
     let vs = 20;
+
+    // Positive keyword matches
     labels.forEach(({ desc, score }) => {
       allKw.forEach(kw => { if (desc.includes(kw) || kw.includes(desc)) vs += Math.round(score * 40); });
     });
-    // Penalize family photos for bar themes
-    if (t.includes('happy hour') || t.includes('cocktail') || t.includes('bar')) {
-      if (labels.some(l => familyLabels.some(f => l.desc.includes(f))) && !labels.some(l => barLabels.some(b => l.desc.includes(b)))) {
-        vs = Math.max(vs - 50, 0);
-      }
-    }
+
+    const hasKids = labels.some(l => familyLabels.some(f => l.desc.includes(f)));
+    const hasBar = labels.some(l => barLabels.some(b => l.desc.includes(b)));
+
+    // Penalizar fuerte si la temática dice "sin niños" y aparecen niños
+    if (noKids && hasKids) vs = Math.max(vs - 80, 0);
+
+    // Penalizar fotos de familia para temáticas de bar/drinks
+    if (isBarTheme && hasKids && !hasBar) vs = Math.max(vs - 60, 0);
+
+    // Bonus si hay contenido de bar para temáticas de bar
+    if (isBarTheme && hasBar) vs = Math.min(vs + 20, 95);
+
     return Math.min(vs, 95);
   });
 }
