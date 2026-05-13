@@ -100,7 +100,7 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 .load-bar { height: 100%; background: var(--lime); width: 0%; transition: width .4s ease; }
 
 /* Photos feed — all themes at once */
-.photos-feed { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+.photos-feed { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 20px; }
 
 /* Theme block */
 .theme-block { display: flex; flex-direction: column; gap: 8px; }
@@ -124,42 +124,42 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 }
 .btn-change:hover { color: var(--text); background: var(--bg3); }
 
-/* Photo card */
-.photo-main {
-  border-radius: 10px; overflow: hidden; background: var(--bg3);
-  border: 1.5px solid var(--line2); position: relative;
-  transition: border-color .2s, transform .12s; cursor: pointer;
+/* Photos grid row — thumbnails */
+.photos-grid-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.photo-thumb {
+  width: 160px; border-radius: 8px; overflow: hidden; background: var(--bg3);
+  border: 1.5px solid var(--line); cursor: pointer; position: relative;
+  transition: border-color .15s, transform .12s; flex-shrink: 0;
 }
-.photo-main:hover { border-color: rgba(212,240,80,0.4); transform: translateY(-1px); }
-.photo-main.copied-state { border-color: #4eb8f0; }
-.photo-main img { width: 100%; height: 160px; object-fit: cover; display: block; background: var(--bg4); }
-.photo-main-name {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 20px 12px 8px;
-  background: linear-gradient(transparent, rgba(12,13,11,0.85));
-  font-size: 10px; color: var(--text2);
-}
-.copied-badge {
-  position: absolute; top: 8px; right: 8px;
-  background: rgba(78,184,240,0.9); color: #0c0d0b;
-  font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 100px;
-  letter-spacing: 0.06em; text-transform: uppercase;
-}
+.photo-thumb:hover { border-color: rgba(212,240,80,0.5); transform: translateY(-2px); }
+.photo-thumb.selected { border-color: var(--lime); }
+.photo-thumb.copied-state { border-color: #4eb8f0; }
+.photo-thumb img { width: 100%; height: 120px; object-fit: cover; display: block; background: var(--bg4); }
+.photo-thumb-name { font-size: 9px; color: var(--text2); padding: 5px 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 .copy-hint {
   position: absolute; inset: 0;
-  background: rgba(12,13,11,0.75);
+  background: rgba(12,13,11,0.78);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-  opacity: 0; transition: opacity .15s; border-radius: 8px;
+  opacity: 0; transition: opacity .15s; border-radius: 6px;
 }
-.photo-main:hover .copy-hint { opacity: 1; }
-.copy-hint-icon { font-size: 24px; }
-.copy-hint-label { font-size: 10px; color: var(--text2); letter-spacing: 0.08em; text-transform: uppercase; }
+.photo-thumb:hover .copy-hint { opacity: 1; }
+.copy-hint-icon { font-size: 22px; }
+.copy-hint-label { font-size: 9px; color: var(--text2); letter-spacing: 0.08em; text-transform: uppercase; }
+
+.copied-badge {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(78,184,240,0.9); color: #0c0d0b;
+  font-size: 9px; font-weight: 500; padding: 2px 7px; border-radius: 100px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
 
 /* Loading skeleton */
-.skeleton { width: 100%; height: 160px; border-radius: 10px; background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+.skeleton { width: 160px; height: 138px; border-radius: 8px; flex-shrink: 0; background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-.no-photo { width: 100%; height: 80px; border-radius: 10px; border: 1px dashed var(--line2); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text3); }
+.no-photo { width: 100%; height: 60px; border-radius: 8px; border: 1px dashed var(--line2); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text3); }
 
 /* State box */
 .state-box {
@@ -448,29 +448,31 @@ function renderFeed() {
 }
 
 function renderThemeBlock(t, i) {
-  const photo = t.photos?.[t.currentIdx];
   const isCopied = t.copied;
+  const copiedPhoto = t.photos?.[t.currentIdx];
 
   let photoHTML = '';
   if (t.status === 'loading') {
-    photoHTML = `<div class="skeleton"></div>`;
-  } else if (!photo) {
-    photoHTML = `<div class="no-photo">Sin fotos encontradas para esta temática</div>`;
+    photoHTML = `<div class="photos-grid-row">${[1,2,3].map(() => `<div class="skeleton"></div>`).join('')}</div>`;
+  } else if (!t.photos?.length) {
+    photoHTML = `<div class="no-photo">Sin fotos encontradas</div>`;
   } else {
-    photoHTML = `
-      <div class="photo-main ${isCopied ? 'copied-state' : ''}" onclick="copyThemePhoto(${i})">
-        <img src="${photo.thumb}" alt="${photo.name}" onerror="this.style.opacity='.15'" />
-        <div class="photo-main-name">${photo.name}</div>
-        ${isCopied
-          ? `<div class="copied-badge">✓ copiada</div>`
-          : `<div class="copy-hint"><div class="copy-hint-icon">⎘</div><div class="copy-hint-label">copiar para Figma</div></div>`
-        }
-      </div>
-    `;
+    photoHTML = `<div class="photos-grid-row">
+      ${t.photos.map((p, idx) => `
+        <div class="photo-thumb ${t.currentIdx === idx ? 'selected' : ''} ${isCopied && t.currentIdx === idx ? 'copied-state' : ''}"
+             onclick="selectAndCopy(${i}, ${idx})">
+          <img src="${p.thumb}" alt="${p.name}" onerror="this.style.opacity='.15'" />
+          <div class="photo-thumb-name">${p.name}</div>
+          ${isCopied && t.currentIdx === idx
+            ? `<div class="copied-badge">✓ copiada</div>`
+            : `<div class="copy-hint"><div class="copy-hint-icon">⎘</div><div class="copy-hint-label">copiar</div></div>`
+          }
+        </div>
+      `).join('')}
+    </div>`;
   }
 
   const hasPhotos = t.photos?.length > 0;
-  const canChange = hasPhotos && t.photos.length > 1;
 
   return `
     <div class="theme-block" id="theme-block-${i}">
@@ -478,12 +480,7 @@ function renderThemeBlock(t, i) {
         <div class="theme-num">${i + 1}</div>
         <div class="theme-block-name">${t.name}</div>
         <div class="theme-block-actions">
-          ${canChange ? `<button class="btn-change" onclick="changePhoto(${i})">↻ cambiar</button>` : ''}
-          ${hasPhotos && t.status === 'done' ? `
-            <button class="btn-copy-photo ${isCopied ? 'copied' : ''}" onclick="copyThemePhoto(${i})">
-              ${isCopied ? '✓ copiada' : '⎘ copiar'}
-            </button>
-          ` : ''}
+          ${isCopied ? `<span style="font-size:11px; color:#4eb8f0;">✓ copiada</span>` : ''}
         </div>
       </div>
       ${photoHTML}
@@ -495,6 +492,16 @@ function updateThemeBlock(i) {
   const el = document.getElementById(`theme-block-${i}`);
   if (el) el.outerHTML = renderThemeBlock(themes[i], i);
   renderSidebar();
+}
+
+// ══════════════════════════════════════════════
+//  SELECT + COPY (click on thumbnail)
+// ══════════════════════════════════════════════
+async function selectAndCopy(themeIdx, photoIdx) {
+  themes[themeIdx].currentIdx = photoIdx;
+  themes[themeIdx].copied = false;
+  updateThemeBlock(themeIdx);
+  await copyThemePhoto(themeIdx);
 }
 
 // ══════════════════════════════════════════════
