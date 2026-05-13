@@ -748,21 +748,35 @@ async function copyPhoto(themeIdx, photoIdx) {
   if (!p) return;
   t.selected = photoIdx;
   renderPhotos();
-  toast('⏳ Copiando…');
+  toast('⏳ Copiando en alta calidad…');
 
-  // Method 1: fetch blob → clipboard
-  try {
-    const r = await fetch(p.thumb);
-    const blob = await r.blob();
-    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-    toast(`✓ "${p.name}" copiada — pegá en Figma con Ctrl+V`);
-    return;
-  } catch(e) {}
+  // URLs to try in order — full res first, then fallbacks
+  const fullResUrls = [
+    `https://drive.google.com/uc?export=download&id=${p.id}`,
+    `https://drive.google.com/uc?export=view&id=${p.id}`,
+    p.thumb.replace('=s220', '=s1600').replace('=s400', '=s1600'), // large thumbnail
+    p.thumb, // original thumbnail
+  ];
 
-  // Method 2: canvas → blob → clipboard
+  // Method 1: try each URL as blob → clipboard
+  for (const url of fullResUrls) {
+    try {
+      const r = await fetch(url, { mode: 'cors' });
+      if (!r.ok) continue;
+      const blob = await r.blob();
+      if (!blob.type.startsWith('image/')) continue;
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      const isHQ = url.includes('export=download') || url.includes('s1600');
+      toast(`✓ "${p.name}" copiada ${isHQ ? 'en alta calidad' : ''} — pegá en Figma con Ctrl+V`);
+      return;
+    } catch(e) { continue; }
+  }
+
+  // Method 2: canvas → blob → clipboard (tries large thumb)
+  const canvasUrl = p.thumb.replace('=s220', '=s1600').replace('=s400', '=s1600');
   try {
     const img = new Image(); img.crossOrigin = 'anonymous';
-    await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = p.thumb; });
+    await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = canvasUrl; });
     const canvas = document.createElement('canvas');
     canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
     canvas.getContext('2d').drawImage(img, 0, 0);
@@ -772,9 +786,9 @@ async function copyPhoto(themeIdx, photoIdx) {
     return;
   } catch(e) {}
 
-  // Fallback: open full res in new tab
+  // Final fallback: open full res in new tab
   window.open(`https://drive.google.com/uc?export=view&id=${p.id}`, '_blank');
-  toast('Foto abierta en nueva pestaña — arrastrála a Figma');
+  toast('Abrió en nueva pestaña — arrastrála a Figma (Drive bloqueó la descarga directa)');
 }
 
 // ══════════════════════════════════════════════
