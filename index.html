@@ -24,6 +24,8 @@ header {
 }
 .logo { font-family: var(--serif); font-size: 19px; letter-spacing: -0.02em; }
 .logo span { color: var(--lime); font-style: italic; }
+.cat-icon { font-style: normal; font-size: 16px; margin-left: 4px; animation: wiggle 3s ease-in-out infinite; }
+@keyframes wiggle { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
 .header-sep { flex: 1; }
 .btn-cfg {
   font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 5px 11px;
@@ -212,7 +214,7 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 <body>
 <div class="shell">
   <header>
-    <div class="logo">photo<span>pick</span></div>
+    <div class="logo">photo<span>pick</span> <span class="cat-icon">🐱📷</span></div>
     <div class="header-sep"></div>
     <button class="btn-cfg" onclick="openModal()">⚙ API Keys</button>
   </header>
