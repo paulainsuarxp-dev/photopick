@@ -100,17 +100,17 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 .load-bar { height: 100%; background: var(--lime); width: 0%; transition: width .4s ease; }
 
 /* Photos feed — all themes at once */
-.photos-feed { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 28px; }
+.photos-feed { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
 
 /* Theme block */
-.theme-block { display: flex; flex-direction: column; gap: 10px; }
-.theme-block-header { display: flex; align-items: center; gap: 12px; }
-.theme-num { font-size: 11px; color: var(--text3); font-weight: 500; min-width: 20px; }
-.theme-block-name { font-family: var(--serif); font-size: 18px; font-style: italic; flex: 1; }
-.theme-block-actions { display: flex; gap: 8px; align-items: center; }
+.theme-block { display: flex; flex-direction: column; gap: 8px; }
+.theme-block-header { display: flex; align-items: center; gap: 10px; }
+.theme-num { font-size: 11px; color: var(--text3); font-weight: 500; min-width: 16px; }
+.theme-block-name { font-family: var(--serif); font-size: 16px; font-style: italic; flex: 1; }
+.theme-block-actions { display: flex; gap: 6px; align-items: center; }
 
 .btn-copy-photo {
-  font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 5px 14px;
+  font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 4px 12px;
   border-radius: 6px; border: 1px solid rgba(212,240,80,0.35);
   background: var(--lime2); color: var(--lime); transition: all .15s; white-space: nowrap;
 }
@@ -118,47 +118,48 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 .btn-copy-photo.copied { background: rgba(78,184,240,0.1); border-color: rgba(78,184,240,0.3); color: #4eb8f0; }
 
 .btn-change {
-  font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 5px 12px;
+  font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 4px 10px;
   border-radius: 6px; border: 1px solid var(--line2);
   background: transparent; color: var(--text2); transition: all .15s; white-space: nowrap;
 }
-.btn-change:hover { border-color: var(--line2); color: var(--text); background: var(--bg3); }
+.btn-change:hover { color: var(--text); background: var(--bg3); }
 
 /* Photo card */
 .photo-main {
-  border-radius: 12px; overflow: hidden; background: var(--bg3);
+  border-radius: 10px; overflow: hidden; background: var(--bg3);
   border: 1.5px solid var(--line2); position: relative;
-  transition: border-color .2s;
+  transition: border-color .2s, transform .12s; cursor: pointer;
 }
+.photo-main:hover { border-color: rgba(212,240,80,0.4); transform: translateY(-1px); }
 .photo-main.copied-state { border-color: #4eb8f0; }
-.photo-main img { width: 100%; height: 260px; object-fit: cover; display: block; background: var(--bg4); }
+.photo-main img { width: 100%; height: 160px; object-fit: cover; display: block; background: var(--bg4); }
 .photo-main-name {
   position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 24px 14px 10px;
+  padding: 20px 12px 8px;
   background: linear-gradient(transparent, rgba(12,13,11,0.85));
   font-size: 10px; color: var(--text2);
 }
 .copied-badge {
-  position: absolute; top: 10px; right: 10px;
+  position: absolute; top: 8px; right: 8px;
   background: rgba(78,184,240,0.9); color: #0c0d0b;
-  font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 100px;
+  font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 100px;
   letter-spacing: 0.06em; text-transform: uppercase;
 }
+.copy-hint {
+  position: absolute; inset: 0;
+  background: rgba(12,13,11,0.75);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  opacity: 0; transition: opacity .15s; border-radius: 8px;
+}
+.photo-main:hover .copy-hint { opacity: 1; }
+.copy-hint-icon { font-size: 24px; }
+.copy-hint-label { font-size: 10px; color: var(--text2); letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* Loading skeleton */
-.skeleton {
-  width: 100%; height: 260px; border-radius: 12px;
-  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
-  background-size: 200% 100%; animation: shimmer 1.4s infinite;
-}
+.skeleton { width: 100%; height: 160px; border-radius: 10px; background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-/* No photo state */
-.no-photo {
-  width: 100%; height: 120px; border-radius: 12px;
-  border: 1px dashed var(--line2); display: flex; align-items: center; justify-content: center;
-  font-size: 12px; color: var(--text3);
-}
+.no-photo { width: 100%; height: 80px; border-radius: 10px; border: 1px dashed var(--line2); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text3); }
 
 /* State box */
 .state-box {
@@ -457,10 +458,13 @@ function renderThemeBlock(t, i) {
     photoHTML = `<div class="no-photo">Sin fotos encontradas para esta temática</div>`;
   } else {
     photoHTML = `
-      <div class="photo-main ${isCopied ? 'copied-state' : ''}">
+      <div class="photo-main ${isCopied ? 'copied-state' : ''}" onclick="copyThemePhoto(${i})">
         <img src="${photo.thumb}" alt="${photo.name}" onerror="this.style.opacity='.15'" />
         <div class="photo-main-name">${photo.name}</div>
-        ${isCopied ? `<div class="copied-badge">✓ copiada</div>` : ''}
+        ${isCopied
+          ? `<div class="copied-badge">✓ copiada</div>`
+          : `<div class="copy-hint"><div class="copy-hint-icon">⎘</div><div class="copy-hint-label">copiar para Figma</div></div>`
+        }
       </div>
     `;
   }
