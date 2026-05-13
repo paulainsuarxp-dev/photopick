@@ -624,7 +624,9 @@ async function startSearch() {
     renderSidebar();
 
     try {
-      const ranked = await rankPhotos(allFiles, themes[i].name, CFG.anthropicKey, used);
+      // Fetch files smart — priority folder first, then rest
+      const files = await fetchDriveFilesForTheme(client.folder, CFG.driveKey, themes[i].name);
+      const ranked = await rankPhotos(files, themes[i].name, CFG.anthropicKey, used);
       themes[i].photos = ranked;
       themes[i].currentIdx = 0;
       themes[i].status = 'done';
@@ -646,15 +648,83 @@ async function startSearch() {
 }
 
 // ══════════════════════════════════════════════
-//  DRIVE — RECURSIVE
+//  FOLDER → THEME MAPPING
+// ══════════════════════════════════════════════
+const FOLDER_MAP = [
+  { keywords: ['drink','cocktail','bar','wine','beer','brindis','happy hour','cheers','alcohol','beverage','vino','cerveza'], folder: ['drink','2) drink','bebida','bar','cocktail','wine','beer'] },
+  { keywords: ['food','brunch','breakfast','lunch','dinner','eat','meal','plate','dish','comida','plato','cena','almuerzo','desayuno','steak','pasta','burger','sushi','nigiri','burrata','churro','dessert','postre'], folder: ['food','1) food','comida','eat','meal','plato'] },
+  { keywords: ['location','exterior','facade','outdoor','patio','terrace','inside','interior','restaurant','space','lugar','terraza','salon'], folder: ['location','3) location','lugar','exterior','interior','space'] },
+  { keywords: ['people','person','portrait','face','guest','client','couple','friends','family','gente','persona','retrato'], folder: ['people','4) people','gente','persona','portrait'] },
+  { keywords: ['action','live','event','music','show','performance','dance','sport','f1','racing','accion'], folder: ['action','5) action','accion','live','event'] },
+  { keywords: ['recent','reciente','new','nuevo','latest','ultimo'], folder: ['reciente','recent','6) reciente','carpetas recientes','new','latest'] },
+  { keywords: ['orlando'], folder: ['orlando'] },
+  { keywords: ['miami','brickell','coral gables','doral','aventura','las olas','new york'], folder: ['miami','brickell','coral','doral','aventura','olas','new york','location','3) location'] },
+];
+
+function getBestFolderMatch(theme, subfolders) {
+  const t = theme.toLowerCase().replace(/^\d+[-.\s]+/, '');
+  for (const mapping of FOLDER_MAP) {
+    const themeMatches = mapping.keywords.some(kw => t.includes(kw) || kw.includes(t.split(/\s+/)[0]));
+    if (themeMatches) {
+      const matched = subfolders.find(f =>
+        mapping.folder.some(fk => f.name.toLowerCase().includes(fk))
+      );
+      if (matched) return matched;
+    }
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════════
+//  DRIVE — SMART FETCH
 // ══════════════════════════════════════════════
 async function fetchDriveFiles(folderId, apiKey) {
   const all = [];
   await fetchRecursive(folderId, apiKey, all, 0);
   return all;
 }
-async function fetchRecursive(folderId, apiKey, all, depth) {
-  if (depth > 6) return;
+
+async function fetchDriveFilesForTheme(folderId, apiKey, theme) {
+  const kp = apiKey ? `&key=${apiKey}` : '';
+
+  // 1. Get subfolders of the client root
+  const fq = encodeURIComponent(`'${folderId}' in parents and trashed=false and mimeType='application/vnd.google-apps.folder'`);
+  const fr = await fetch(`https://www.googleapis.com/drive/v3/files?q=${fq}&fields=files(id,name)&pageSize=50${kp}`);
+  const subfolders = fr.ok ? ((await fr.json()).files || []) : [];
+
+  // 2. Find best matching subfolder for this theme
+  const bestFolder = getBestFolderMatch(theme, subfolders);
+
+  let priorityFiles = [];
+  let otherFiles = [];
+
+  if (bestFolder) {
+    // Fetch from best matching folder first
+    priorityFiles = await fetchFolderFiles(bestFolder.id, apiKey);
+  }
+
+  // 3. Also fetch from all other folders (fallback + supplement)
+  for (const sub of subfolders) {
+    if (bestFolder && sub.id === bestFolder.id) continue;
+    const files = await fetchFolderFiles(sub.id, apiKey);
+    otherFiles.push(...files);
+  }
+
+  // 4. Also check root folder images
+  const rootFiles = await fetchFolderFiles(folderId, apiKey, false);
+  otherFiles.push(...rootFiles);
+
+  // Priority files come first, then others
+  return [...priorityFiles, ...otherFiles];
+}
+
+async function fetchFolderFiles(folderId, apiKey, recursive = true) {
+  const all = [];
+  await fetchRecursive(folderId, apiKey, all, 0, recursive ? 3 : 0);
+  return all;
+}
+async function fetchRecursive(folderId, apiKey, all, depth, maxDepth = 6) {
+  if (depth > maxDepth) return;
   const kp = apiKey ? `&key=${apiKey}` : '';
   const mimes = "(mimeType='image/jpeg' or mimeType='image/png' or mimeType='image/webp')";
   const iq = encodeURIComponent(`'${folderId}' in parents and trashed=false and ${mimes}`);
@@ -670,7 +740,7 @@ async function fetchRecursive(folderId, apiKey, all, depth) {
   const fq = encodeURIComponent(`'${folderId}' in parents and trashed=false and mimeType='application/vnd.google-apps.folder'`);
   const fr = await fetch(`https://www.googleapis.com/drive/v3/files?q=${fq}&fields=files(id,name)&pageSize=50${kp}`);
   if (!fr.ok) return;
-  for (const sub of ((await fr.json()).files || [])) await fetchRecursive(sub.id, apiKey, all, depth + 1);
+  for (const sub of ((await fr.json()).files || [])) await fetchRecursive(sub.id, apiKey, all, depth + 1, maxDepth);
 }
 
 // ══════════════════════════════════════════════
