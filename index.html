@@ -16,10 +16,8 @@
 }
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--mono); }
 
-/* ── Shell ── */
 .shell { display: grid; grid-template-rows: 52px 1fr; height: 100vh; }
 
-/* ── Header ── */
 header {
   display: flex; align-items: center; gap: 14px; padding: 0 20px;
   border-bottom: 1px solid var(--line); background: var(--bg2);
@@ -27,7 +25,6 @@ header {
 .logo { font-family: var(--serif); font-size: 19px; letter-spacing: -0.02em; }
 .logo span { color: var(--lime); font-style: italic; }
 .header-sep { flex: 1; }
-.header-meta { font-size: 11px; color: var(--text3); }
 .btn-cfg {
   font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 5px 11px;
   border-radius: 6px; border: 1px solid var(--line2); background: transparent; color: var(--text2);
@@ -35,19 +32,17 @@ header {
 }
 .btn-cfg:hover { border-color: var(--lime); color: var(--lime); }
 
-/* ── Body ── */
-.body { display: grid; grid-template-columns: 280px 1fr; overflow: hidden; }
+.body { display: grid; grid-template-columns: 260px 1fr; overflow: hidden; }
 
-/* ── Left panel ── */
+/* ── Left ── */
 .left { border-right: 1px solid var(--line); background: var(--bg2); display: flex; flex-direction: column; overflow: hidden; }
 
-.client-selector { padding: 10px 14px 12px; border-bottom: 1px solid var(--line); }
+.client-selector { padding: 10px 12px 12px; border-bottom: 1px solid var(--line); }
 .client-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .client-bar-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); flex: 1; }
 .btn-sm {
   font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 3px 8px;
-  border-radius: 5px; border: 1px solid var(--line2); background: transparent; color: var(--text2);
-  transition: all .15s;
+  border-radius: 5px; border: 1px solid var(--line2); background: transparent; color: var(--text2); transition: all .15s;
 }
 .btn-sm:hover { border-color: var(--lime); color: var(--lime); }
 .client-select {
@@ -60,10 +55,10 @@ header {
 .client-select:focus { border-color: var(--lime); }
 .client-select option { background: var(--bg2); }
 
-.panel-label { padding: 14px 16px 8px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
+.panel-label { padding: 14px 14px 8px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
 .themes-wrap { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
 textarea#themesInput {
-  width: 100%; height: 150px; resize: none;
+  width: 100%; height: 145px; resize: none;
   background: var(--bg3); border: 1px solid var(--line2); border-radius: 8px;
   color: var(--text); font-family: var(--mono); font-size: 12px; line-height: 1.7;
   padding: 10px 12px; outline: none; transition: border-color .15s;
@@ -82,75 +77,90 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 .btn-search:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .divider { border: none; border-top: 1px solid var(--line); }
+
+/* Progress list */
 .themes-list { flex: 1; overflow-y: auto; padding: 6px 0; }
 .theme-row {
-  display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer;
-  transition: background .12s; border-left: 2px solid transparent;
+  display: flex; align-items: center; gap: 10px; padding: 8px 14px;
+  border-left: 2px solid transparent; transition: background .12s; cursor: pointer;
 }
 .theme-row:hover { background: var(--bg3); }
 .theme-row.active { background: var(--bg3); border-left-color: var(--lime); }
 .theme-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
 .theme-dot.done { background: var(--lime); }
+.theme-dot.copied { background: #4eb8f0; }
 .theme-dot.loading { background: #f0904e; animation: pulse 1s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
-.theme-name { font-size: 13px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.theme-count { font-size: 10px; color: var(--text3); }
+.theme-name { font-size: 12px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.theme-status { font-size: 10px; color: var(--text3); }
 
-/* ── Right panel ── */
+/* ── Right ── */
 .right { display: flex; flex-direction: column; overflow: hidden; }
-.right-header { padding: 16px 22px 12px; border-bottom: 1px solid var(--line); display: flex; align-items: baseline; gap: 12px; }
-.right-title { font-family: var(--serif); font-size: 22px; font-style: italic; }
-.right-sub { font-size: 11px; color: var(--text2); }
-.load-bar-wrap { height: 2px; background: transparent; }
+.load-bar-wrap { height: 2px; }
 .load-bar { height: 100%; background: var(--lime); width: 0%; transition: width .4s ease; }
 
-.photos-area { flex: 1; overflow-y: auto; padding: 22px; display: flex; flex-direction: column; gap: 20px; }
+/* Photos feed — all themes at once */
+.photos-feed { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 28px; }
 
-/* ── Featured layout ── */
-.featured-block { display: flex; flex-direction: column; gap: 10px; }
-.featured-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+/* Theme block */
+.theme-block { display: flex; flex-direction: column; gap: 10px; }
+.theme-block-header { display: flex; align-items: center; gap: 12px; }
+.theme-num { font-size: 11px; color: var(--text3); font-weight: 500; min-width: 20px; }
+.theme-block-name { font-family: var(--serif); font-size: 18px; font-style: italic; flex: 1; }
+.theme-block-actions { display: flex; gap: 8px; align-items: center; }
 
-.featured-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
-
-/* Main featured card */
-.photo-card-featured {
-  border-radius: 12px; overflow: hidden; cursor: pointer;
-  border: 2px solid var(--line2); background: var(--bg3);
-  transition: border-color .15s, transform .12s; position: relative;
+.btn-copy-photo {
+  font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 5px 14px;
+  border-radius: 6px; border: 1px solid rgba(212,240,80,0.35);
+  background: var(--lime2); color: var(--lime); transition: all .15s; white-space: nowrap;
 }
-.photo-card-featured:hover { border-color: rgba(212,240,80,0.4); transform: translateY(-2px); }
-.photo-card-featured.selected { border-color: var(--lime); }
-.photo-card-featured img { width: 100%; height: 220px; object-fit: cover; display: block; background: var(--bg4); }
-.photo-card-featured .card-body { padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; }
-.photo-card-featured .card-name { font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-.photo-card-featured .card-badge { font-size: 10px; color: var(--lime); background: var(--lime2); border: 1px solid rgba(212,240,80,0.25); padding: 2px 8px; border-radius: 100px; white-space: nowrap; }
+.btn-copy-photo:hover { background: var(--lime3); }
+.btn-copy-photo.copied { background: rgba(78,184,240,0.1); border-color: rgba(78,184,240,0.3); color: #4eb8f0; }
 
-/* Alt cards */
-.photo-card-alt {
-  border-radius: 10px; overflow: hidden; cursor: pointer;
-  border: 1.5px solid var(--line); background: var(--bg3);
-  transition: border-color .15s, transform .12s; position: relative;
+.btn-change {
+  font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 5px 12px;
+  border-radius: 6px; border: 1px solid var(--line2);
+  background: transparent; color: var(--text2); transition: all .15s; white-space: nowrap;
 }
-.photo-card-alt:hover { border-color: var(--line2); transform: translateY(-2px); }
-.photo-card-alt.selected { border-color: var(--lime); }
-.photo-card-alt img { width: 100%; height: 160px; object-fit: cover; display: block; background: var(--bg4); }
-.photo-card-alt .card-body { padding: 7px 9px; }
-.photo-card-alt .card-name { font-size: 10px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.photo-card-alt .card-score { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.btn-change:hover { border-color: var(--line2); color: var(--text); background: var(--bg3); }
 
-/* Copy overlay — shared */
-.copy-overlay {
-  position: absolute; inset: 0;
-  background: rgba(12,13,11,0.82);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-  opacity: 0; transition: opacity .15s; border-radius: inherit;
+/* Photo card */
+.photo-main {
+  border-radius: 12px; overflow: hidden; background: var(--bg3);
+  border: 1.5px solid var(--line2); position: relative;
+  transition: border-color .2s;
 }
-.photo-card-featured.selected .copy-overlay,
-.photo-card-alt.selected .copy-overlay { opacity: 1; }
-.copy-icon { font-size: 28px; }
-.copy-label { font-size: 10px; color: var(--text2); letter-spacing: 0.08em; text-transform: uppercase; }
+.photo-main.copied-state { border-color: #4eb8f0; }
+.photo-main img { width: 100%; height: 260px; object-fit: cover; display: block; background: var(--bg4); }
+.photo-main-name {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 24px 14px 10px;
+  background: linear-gradient(transparent, rgba(12,13,11,0.85));
+  font-size: 10px; color: var(--text2);
+}
+.copied-badge {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(78,184,240,0.9); color: #0c0d0b;
+  font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 100px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
 
-/* State boxes */
+/* Loading skeleton */
+.skeleton {
+  width: 100%; height: 260px; border-radius: 12px;
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
+  background-size: 200% 100%; animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* No photo state */
+.no-photo {
+  width: 100%; height: 120px; border-radius: 12px;
+  border: 1px dashed var(--line2); display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--text3);
+}
+
+/* State box */
 .state-box {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   height: 100%; gap: 14px; text-align: center; padding: 40px; color: var(--text3);
@@ -184,7 +194,7 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 .btn-save { font-family: var(--mono); font-size: 12px; cursor: pointer; font-weight: 500; padding: 7px 16px; border-radius: 7px; border: 1px solid rgba(212,240,80,0.35); background: var(--lime2); color: var(--lime); transition: all .15s; }
 .btn-save:hover { background: var(--lime3); }
 
-/* ── Toast ── */
+/* Toast */
 .toast {
   position: fixed; bottom: 22px; right: 22px; z-index: 99;
   background: var(--bg3); border: 1px solid var(--line2); border-radius: 8px;
@@ -202,11 +212,9 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 </head>
 <body>
 <div class="shell">
-
   <header>
     <div class="logo">photo<span>pick</span></div>
     <div class="header-sep"></div>
-    <div class="header-meta" id="headerMeta">—</div>
     <button class="btn-cfg" onclick="openModal()">⚙ API Keys</button>
   </header>
 
@@ -225,14 +233,14 @@ textarea#themesInput::placeholder { color: var(--text3); font-style: italic; }
 
       <div class="panel-label">Temáticas de la semana</div>
       <div class="themes-wrap">
-        <textarea id="themesInput" placeholder="Pegá los títulos de Notion, uno por línea:
+        <textarea id="themesInput" placeholder="Pegá los títulos de Notion:
 
-Happy Hour
-Brunch
-Mother's Day
-Live Music
-F1 Weekend"></textarea>
-        <div class="hint">Copiá los títulos de las cards de <b>Notion</b> y pegálos acá.</div>
+1-mothers day
+2-brunch
+3-happy hour
+4-live music
+5-f1 weekend"></textarea>
+        <div class="hint">Copiá los títulos de las cards de <b>Notion</b>, una por línea.</div>
         <button class="btn-search" id="searchBtn" onclick="startSearch()">
           <span>✦</span><span id="searchBtnText">Buscar fotos</span>
         </button>
@@ -244,16 +252,12 @@ F1 Weekend"></textarea>
 
     <!-- Right -->
     <div class="right">
-      <div class="right-header" id="rightHeader" style="display:none;">
-        <div class="right-title" id="rightTitle"></div>
-        <div class="right-sub" id="rightSub"></div>
-      </div>
       <div class="load-bar-wrap"><div class="load-bar" id="loadBar"></div></div>
-      <div class="photos-area" id="photosArea">
+      <div class="photos-feed" id="photosFeed">
         <div class="state-box">
           <div class="state-icon">📷</div>
           <div class="state-title">Listo para buscar</div>
-          <div class="state-sub">Elegí un cliente, pegá las temáticas de Notion y apretá "Buscar fotos".</div>
+          <div class="state-sub">Elegí un cliente, pegá las temáticas de Notion y apretá "Buscar fotos". Vas a ver una foto lista por cada temática.</div>
         </div>
       </div>
     </div>
@@ -270,12 +274,12 @@ F1 Weekend"></textarea>
     <div class="modal-body">
       <div class="field">
         <div class="field-label">Google Drive API Key</div>
-        <div class="field-hint">Gratis en <code>console.cloud.google.com</code> → APIs → Google Drive API → Credenciales → Crear clave.</div>
+        <div class="field-hint">Gratis en <code>console.cloud.google.com</code> → APIs → Google Drive API → Credenciales → Crear clave. También habilitar Cloud Vision API en el mismo proyecto.</div>
         <input class="field-input" id="driveKeyInput" type="password" placeholder="AIzaSy..." />
       </div>
       <div class="field">
-        <div class="field-label">Anthropic API Key <span style="color:var(--text3)">(opcional — ranking visual con IA)</span></div>
-        <div class="field-hint">En <code>console.anthropic.com</code> → API Keys → Create key. Sin esta clave rankea por nombre + sinónimos.</div>
+        <div class="field-label">Anthropic API Key <span style="color:var(--text3)">(opcional)</span></div>
+        <div class="field-hint">En <code>console.anthropic.com</code> → API Keys → Create key.</div>
         <input class="field-input" id="anthropicKeyInput" type="password" placeholder="sk-ant-..." />
       </div>
     </div>
@@ -296,11 +300,11 @@ F1 Weekend"></textarea>
     <div class="modal-body">
       <div class="field">
         <div class="field-label">Nombre del cliente</div>
-        <input class="field-input" id="clientNameInput" placeholder="Ej: Corazón Restaurant" />
+        <input class="field-input" id="clientNameInput" placeholder="Ej: Baires Grill" />
       </div>
       <div class="field">
         <div class="field-label">ID de carpeta de Google Drive</div>
-        <div class="field-hint">URL de la carpeta: <code>drive.google.com/drive/folders/<b>ESTE-ES-EL-ID</b></code></div>
+        <div class="field-hint">URL: <code>drive.google.com/drive/folders/<b>ESTE-ES-EL-ID</b></code></div>
         <input class="field-input" id="clientFolderInput" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs" />
       </div>
     </div>
@@ -311,7 +315,6 @@ F1 Weekend"></textarea>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
 
 <script>
@@ -323,9 +326,9 @@ let CLIENTS = JSON.parse(localStorage.getItem('pp_clients') || '[]');
 
 if (CLIENTS.length === 0) {
   CLIENTS = [
-    { id: 'baires',  name: 'Baires Grill',    folder: '1a8pdT0g9K_ONOB_3xWpI9-VyF2shtAZM' },
-    { id: 'corazon', name: 'Corazon',          folder: '1rym5MN6fvTz2HO9msEPOx-3b3RdQHcV2' },
-    { id: 'eclipse', name: 'Eclipse Di Luna',  folder: '1GzFDXGtVMTSCIputJuL9Ya2-CiPEDel4' },
+    { id: 'baires',  name: 'Baires Grill',   folder: '1a8pdT0g9K_ONOB_3xWpI9-VyF2shtAZM' },
+    { id: 'corazon', name: 'Corazon',         folder: '1rym5MN6fvTz2HO9msEPOx-3b3RdQHcV2' },
+    { id: 'eclipse', name: 'Eclipse Di Luna', folder: '1GzFDXGtVMTSCIputJuL9Ya2-CiPEDel4' },
   ];
   localStorage.setItem('pp_clients', JSON.stringify(CLIENTS));
 }
@@ -333,6 +336,24 @@ if (CLIENTS.length === 0) {
 let activeClientId = CLIENTS[0]?.id || null;
 function saveClients() { localStorage.setItem('pp_clients', JSON.stringify(CLIENTS)); }
 function getActiveClient() { return CLIENTS.find(c => c.id === activeClientId) || null; }
+
+// Used photos memory: { clientId: { photoId: weekLabel } }
+let USED = JSON.parse(localStorage.getItem('pp_used') || '{}');
+function saveUsed() { localStorage.setItem('pp_used', JSON.stringify(USED)); }
+function getUsedForClient(clientId) { return USED[clientId] || {}; }
+function markPhotoUsed(clientId, photoId) {
+  if (!USED[clientId]) USED[clientId] = {};
+  const now = new Date();
+  const week = `Semana ${getWeekNumber(now)} ${now.getFullYear()}`;
+  USED[clientId][photoId] = week;
+  saveUsed();
+}
+function getWeekNumber(d) {
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+}
 
 function renderClientSelect() {
   const sel = document.getElementById('clientSelect');
@@ -343,15 +364,10 @@ function renderClientSelect() {
 
 function onClientChange() {
   activeClientId = document.getElementById('clientSelect').value;
-  themes = []; activeIdx = null;
-  renderSidebar(); renderPhotos();
-  updateHeaderMeta();
+  themes = [];
+  renderSidebar();
+  renderFeed();
   document.getElementById('themesInput').value = '';
-}
-
-function updateHeaderMeta() {
-  const c = getActiveClient();
-  document.getElementById('headerMeta').textContent = c ? c.name : '—';
 }
 
 // Modals
@@ -367,7 +383,6 @@ function saveConfig() {
   localStorage.setItem('pp_cfg', JSON.stringify(CFG));
   closeModal(); toast('Configuración guardada ✓');
 }
-
 function openClientModal() {
   document.getElementById('clientNameInput').value = '';
   document.getElementById('clientFolderInput').value = '';
@@ -377,23 +392,22 @@ function closeClientModal() { document.getElementById('clientModal').classList.a
 function saveClient() {
   const name = document.getElementById('clientNameInput').value.trim();
   const folder = document.getElementById('clientFolderInput').value.trim();
-  if (!name) { toast('Escribí el nombre del cliente'); return; }
+  if (!name) { toast('Escribí el nombre'); return; }
   if (!folder) { toast('Pegá el ID de la carpeta'); return; }
   const id = 'c_' + Date.now();
   CLIENTS.push({ id, name, folder });
   saveClients(); activeClientId = id;
-  renderClientSelect(); updateHeaderMeta(); closeClientModal();
+  renderClientSelect(); closeClientModal();
   toast(`✓ ${name} agregado`);
 }
 
-// Init
-renderClientSelect(); updateHeaderMeta();
+renderClientSelect();
 
 // ══════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════
+// themes: [{ name, status, photos, currentIdx, copied }]
 let themes = [];
-let activeIdx = null;
 
 function parseThemes() {
   return document.getElementById('themesInput').value
@@ -407,82 +421,152 @@ function renderSidebar() {
   const list = document.getElementById('themesList');
   if (!themes.length) { list.innerHTML = ''; return; }
   list.innerHTML = themes.map((t, i) => `
-    <div class="theme-row ${activeIdx === i ? 'active' : ''}" onclick="selectTheme(${i})">
-      <div class="theme-dot ${t.status === 'done' ? 'done' : t.status === 'loading' ? 'loading' : ''}"></div>
+    <div class="theme-row ${t.copied ? 'active' : ''}" onclick="scrollToTheme(${i})">
+      <div class="theme-dot ${t.copied ? 'copied' : t.status === 'done' ? 'done' : t.status === 'loading' ? 'loading' : ''}"></div>
       <div class="theme-name">${t.name}</div>
-      <div class="theme-count">${t.status === 'done' ? (t.photos.length ? '✓' : '—') : t.status === 'loading' ? '…' : ''}</div>
+      <div class="theme-status">${t.copied ? '✓' : ''}</div>
     </div>
   `).join('');
 }
 
-function selectTheme(i) {
-  activeIdx = i; renderSidebar(); renderPhotos();
+function scrollToTheme(i) {
+  const el = document.getElementById(`theme-block-${i}`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ══════════════════════════════════════════════
-//  PHOTOS RENDER — featured layout
+//  FEED RENDER — all themes at once
 // ══════════════════════════════════════════════
-function renderPhotos() {
-  const area = document.getElementById('photosArea');
-  const header = document.getElementById('rightHeader');
-  const t = themes[activeIdx];
-
-  if (!t) {
-    header.style.display = 'none';
-    area.innerHTML = `<div class="state-box"><div class="state-icon">👈</div><div class="state-title">Elegí una temática</div></div>`;
+function renderFeed() {
+  const feed = document.getElementById('photosFeed');
+  if (!themes.length) {
+    feed.innerHTML = `<div class="state-box"><div class="state-icon">📷</div><div class="state-title">Listo para buscar</div><div class="state-sub">Elegí un cliente, pegá las temáticas de Notion y apretá "Buscar fotos".</div></div>`;
     return;
   }
+  feed.innerHTML = themes.map((t, i) => renderThemeBlock(t, i)).join('');
+}
 
-  header.style.display = 'flex';
-  document.getElementById('rightTitle').textContent = t.name;
+function renderThemeBlock(t, i) {
+  const photo = t.photos?.[t.currentIdx];
+  const isCopied = t.copied;
 
+  let photoHTML = '';
   if (t.status === 'loading') {
-    document.getElementById('rightSub').textContent = 'buscando fotos…';
-    area.innerHTML = `<div class="state-box"><div class="state-icon">🔍</div><div class="state-title">Analizando fotos…</div><div class="state-sub">Buscando las mejores fotos para <em>"${t.name}"</em> en el Drive.</div></div>`;
-    return;
-  }
-
-  if (t.status === 'done' && !t.photos.length) {
-    document.getElementById('rightSub').textContent = 'sin resultados';
-    area.innerHTML = `<div class="state-box"><div class="state-icon">🤷</div><div class="state-title">Sin fotos</div><div class="state-sub">No se encontraron imágenes. Verificá que la carpeta esté compartida como pública.</div></div>`;
-    return;
-  }
-
-  if (t.status === 'done') {
-    const [main, ...alts] = t.photos;
-    const altSlice = alts.slice(0, 3);
-    document.getElementById('rightSub').textContent = `Hacé clic en la foto para copiarla y pegarla en Figma`;
-
-    area.innerHTML = `
-      <div class="featured-block">
-        <div class="featured-label">⭐ Foto sugerida</div>
-        <div class="featured-row">
-          <!-- Main featured -->
-          <div class="photo-card-featured ${t.selected === 0 ? 'selected' : ''}" onclick="copyPhoto(${activeIdx}, 0)">
-            <img src="${main.thumb}" alt="${main.name}" onerror="this.style.opacity='.2'" />
-            <div class="card-body">
-              <div class="card-name">${main.name}</div>
-              <div class="card-badge">mejor opción</div>
-            </div>
-            <div class="copy-overlay"><div class="copy-icon">⎘</div><div class="copy-label">copiada — pegá en Figma</div></div>
-          </div>
-          <!-- Alts -->
-          <div style="display:flex; flex-direction:column; gap:10px;">
-            ${altSlice.map((p, idx) => `
-              <div class="photo-card-alt ${t.selected === idx + 1 ? 'selected' : ''}" onclick="copyPhoto(${activeIdx}, ${idx + 1})" style="flex:1;">
-                <img src="${p.thumb}" alt="${p.name}" onerror="this.style.opacity='.2'" style="height:100%; min-height:80px;" />
-                <div class="card-body">
-                  <div class="card-name">${p.name}</div>
-                  <div class="card-score">alternativa ${idx + 1}</div>
-                </div>
-                <div class="copy-overlay"><div class="copy-icon">⎘</div><div class="copy-label">copiar</div></div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
+    photoHTML = `<div class="skeleton"></div>`;
+  } else if (!photo) {
+    photoHTML = `<div class="no-photo">Sin fotos encontradas para esta temática</div>`;
+  } else {
+    photoHTML = `
+      <div class="photo-main ${isCopied ? 'copied-state' : ''}">
+        <img src="${photo.thumb}" alt="${photo.name}" onerror="this.style.opacity='.15'" />
+        <div class="photo-main-name">${photo.name}</div>
+        ${isCopied ? `<div class="copied-badge">✓ copiada</div>` : ''}
       </div>
     `;
   }
+
+  const hasPhotos = t.photos?.length > 0;
+  const canChange = hasPhotos && t.photos.length > 1;
+
+  return `
+    <div class="theme-block" id="theme-block-${i}">
+      <div class="theme-block-header">
+        <div class="theme-num">${i + 1}</div>
+        <div class="theme-block-name">${t.name}</div>
+        <div class="theme-block-actions">
+          ${canChange ? `<button class="btn-change" onclick="changePhoto(${i})">↻ cambiar</button>` : ''}
+          ${hasPhotos && t.status === 'done' ? `
+            <button class="btn-copy-photo ${isCopied ? 'copied' : ''}" onclick="copyThemePhoto(${i})">
+              ${isCopied ? '✓ copiada' : '⎘ copiar'}
+            </button>
+          ` : ''}
+        </div>
+      </div>
+      ${photoHTML}
+    </div>
+  `;
+}
+
+function updateThemeBlock(i) {
+  const el = document.getElementById(`theme-block-${i}`);
+  if (el) el.outerHTML = renderThemeBlock(themes[i], i);
+  renderSidebar();
+}
+
+// ══════════════════════════════════════════════
+//  CHANGE PHOTO
+// ══════════════════════════════════════════════
+function changePhoto(i) {
+  const t = themes[i];
+  if (!t.photos?.length) return;
+  // Cycle through available photos, skip already used ones
+  const used = getUsedForClient(activeClientId);
+  let next = (t.currentIdx + 1) % t.photos.length;
+  let tries = 0;
+  while (used[t.photos[next]?.id] && tries < t.photos.length) {
+    next = (next + 1) % t.photos.length;
+    tries++;
+  }
+  t.currentIdx = next;
+  t.copied = false;
+  updateThemeBlock(i);
+}
+
+// ══════════════════════════════════════════════
+//  COPY PHOTO
+// ══════════════════════════════════════════════
+async function copyThemePhoto(i) {
+  const t = themes[i];
+  const photo = t.photos?.[t.currentIdx];
+  if (!photo) return;
+
+  toast('⏳ Copiando en alta calidad…');
+
+  const urls = [
+    `https://drive.google.com/uc?export=download&id=${photo.id}`,
+    `https://drive.google.com/uc?export=view&id=${photo.id}`,
+    photo.thumb.replace('=s220', '=s1600').replace('=s400', '=s1600'),
+    photo.thumb,
+  ];
+
+  let copied = false;
+  for (const url of urls) {
+    try {
+      const r = await fetch(url, { mode: 'cors' });
+      if (!r.ok) continue;
+      const blob = await r.blob();
+      if (!blob.type.startsWith('image/')) continue;
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      copied = true;
+      break;
+    } catch(e) { continue; }
+  }
+
+  if (!copied) {
+    try {
+      const canvasUrl = photo.thumb.replace('=s220', '=s1600').replace('=s400', '=s1600');
+      const img = new Image(); img.crossOrigin = 'anonymous';
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = canvasUrl; });
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      copied = true;
+    } catch(e) {}
+  }
+
+  if (!copied) {
+    window.open(`https://drive.google.com/uc?export=view&id=${photo.id}`, '_blank');
+    toast('Foto abierta en nueva pestaña — arrastrála a Figma');
+    return;
+  }
+
+  // Mark as used
+  markPhotoUsed(activeClientId, photo.id);
+  t.copied = true;
+  updateThemeBlock(i);
+  toast(`✓ "${photo.name}" copiada — pegá en Figma con Ctrl+V`);
 }
 
 // ══════════════════════════════════════════════
@@ -493,11 +577,10 @@ async function startSearch() {
   if (!names.length) { toast('Pegá al menos una temática'); return; }
   const client = getActiveClient();
   if (!client) { toast('Elegí un cliente primero'); return; }
-  if (!client.folder) { toast('Este cliente no tiene carpeta de Drive'); return; }
 
-  themes = names.map(name => ({ name, status: 'pending', photos: [], selected: null }));
-  activeIdx = 0;
-  renderSidebar(); renderPhotos();
+  themes = names.map(name => ({ name, status: 'pending', photos: [], currentIdx: 0, copied: false }));
+  renderSidebar();
+  renderFeed();
 
   const btn = document.getElementById('searchBtn');
   btn.disabled = true;
@@ -509,7 +592,7 @@ async function startSearch() {
   try {
     toast('Accediendo al Drive…');
     allFiles = await fetchDriveFiles(client.folder, CFG.driveKey);
-    toast(`${allFiles.length} fotos encontradas en Drive`);
+    toast(`${allFiles.length} fotos encontradas`);
     bar.style.width = '20%';
   } catch(e) {
     toast('❌ ' + e.message);
@@ -519,13 +602,17 @@ async function startSearch() {
     return;
   }
 
+  const used = getUsedForClient(activeClientId);
+
   for (let i = 0; i < themes.length; i++) {
     themes[i].status = 'loading';
-    if (activeIdx === i) renderPhotos();
+    updateThemeBlock(i);
     renderSidebar();
 
     try {
-      themes[i].photos = await rankPhotos(allFiles, themes[i].name, CFG.anthropicKey);
+      const ranked = await rankPhotos(allFiles, themes[i].name, CFG.anthropicKey, used);
+      themes[i].photos = ranked;
+      themes[i].currentIdx = 0;
       themes[i].status = 'done';
     } catch(e) {
       themes[i].photos = [];
@@ -534,363 +621,231 @@ async function startSearch() {
     }
 
     bar.style.width = (20 + ((i + 1) / themes.length) * 80) + '%';
-    if (activeIdx === i) renderPhotos();
+    updateThemeBlock(i);
     renderSidebar();
   }
 
-  setTimeout(() => { bar.style.width = '0%'; }, 1000);
+  setTimeout(() => { bar.style.width = '0%'; }, 800);
   btn.disabled = false;
   document.getElementById('searchBtnText').textContent = 'Buscar fotos';
-  toast('¡Listo! Hacé clic en la foto para copiarla a Figma ✓');
+  toast('¡Listo! Copiá cada foto para usarla en Figma ✓');
 }
 
 // ══════════════════════════════════════════════
-//  DRIVE — RECURSIVE FETCH
+//  DRIVE — RECURSIVE
 // ══════════════════════════════════════════════
 async function fetchDriveFiles(folderId, apiKey) {
   const all = [];
   await fetchRecursive(folderId, apiKey, all, 0);
   return all;
 }
-
 async function fetchRecursive(folderId, apiKey, all, depth) {
   if (depth > 6) return;
   const kp = apiKey ? `&key=${apiKey}` : '';
-
-  // Images in this folder
   const mimes = "(mimeType='image/jpeg' or mimeType='image/png' or mimeType='image/webp')";
   const iq = encodeURIComponent(`'${folderId}' in parents and trashed=false and ${mimes}`);
   let pt = '';
   do {
-    const url = `https://www.googleapis.com/drive/v3/files?q=${iq}&fields=${encodeURIComponent('nextPageToken,files(id,name,thumbnailLink,mimeType)')}&pageSize=100${kp}${pt ? '&pageToken=' + pt : ''}`;
+    const url = `https://www.googleapis.com/drive/v3/files?q=${iq}&fields=${encodeURIComponent('nextPageToken,files(id,name,thumbnailLink,mimeType)')}&pageSize=100${kp}${pt ? '&pageToken='+pt : ''}`;
     const r = await fetch(url);
-    if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e?.error?.message || `HTTP ${r.status} — configurá una Drive API Key`); }
+    if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e?.error?.message || `HTTP ${r.status}`); }
     const d = await r.json();
     all.push(...(d.files || []));
     pt = d.nextPageToken || '';
-  } while (pt);
-
-  // Subfolders — recurse
+  } while(pt);
   const fq = encodeURIComponent(`'${folderId}' in parents and trashed=false and mimeType='application/vnd.google-apps.folder'`);
   const fr = await fetch(`https://www.googleapis.com/drive/v3/files?q=${fq}&fields=files(id,name)&pageSize=50${kp}`);
   if (!fr.ok) return;
-  const fd = await fr.json();
-  for (const sub of (fd.files || [])) {
-    await fetchRecursive(sub.id, apiKey, all, depth + 1);
-  }
+  for (const sub of ((await fr.json()).files || [])) await fetchRecursive(sub.id, apiKey, all, depth + 1);
 }
 
 // ══════════════════════════════════════════════
-//  SYNONYM DICTIONARY
+//  SYNONYMS
 // ══════════════════════════════════════════════
 const SYNONYMS = {
-  // Drinks & bar
-  'happy hour':    ['cocktail','drink','bar','copa','trago','cerveza','wine','vino','beer','martini','margarita','mojito','aperitivo','gin','whiskey','champagne','prosecco','sangria','mixology','spirits'],
-  'cocktail':      ['drink','bar','copa','trago','martini','margarita','mojito','gin','whiskey','shaker','aperitivo','mixology'],
-  'wine':          ['vino','copa','tinto','blanco','rosé','rose','sommelier','bottle','botella','vineyard'],
-  'beer':          ['cerveza','draft','pint','craft','lager','ipa','ale','baires beer','michelada'],
-  'baires beer':   ['beer','cerveza','draft','pint','craft','lager','ipa','cold','refreshing','mug','glass'],
-  'cheers':        ['brindis','toast','celebration','copa','glass','champagne','friends','group','cheers and chill'],
-  'cheers and chill': ['drinks','cocktail','relax','cozy','friends','copa','bar','evening','night'],
-  'cheers & chill':   ['drinks','cocktail','relax','cozy','friends','copa','bar','evening','night'],
-  'wine monday':   ['wine','vino','copa','monday','lunes','red','tinto','white','blanco','glass','bottle'],
-
-  // Brunch & breakfast
-  'brunch':        ['eggs','huevos','pancake','waffle','french toast','avocado','palta','mimosa','breakfast','desayuno','bacon','benedict','salmon','granola','croissant','juice','coffee'],
-  'breakfast':     ['eggs','huevos','pancake','bacon','croissant','coffee','juice','granola','desayuno','omelet'],
-  'sunday brunch': ['eggs','mimosa','bloody mary','benedict','avocado','salmon','waffle','pancake'],
-  'lunch':         ['almuerzo','midday','sandwich','salad','ensalada','soup','sopa','plate','plato','burger'],
-
-  // Special occasions
-  "mother's day":  ['flowers','flores','floral','bouquet','mom','madre','celebration','brunch','pink','rosa','elegant','family','familia','love','amor'],
-  'mothers day':   ['flowers','flores','floral','bouquet','mom','madre','celebration','brunch','pink','rosa','elegant'],
-  'anniversary':   ['celebration','couple','pareja','romantic','romantico','candle','vela','champagne','flowers','elegant','special'],
-  'birthday':      ['cake','torta','celebration','candle','vela','party','fiesta','balloon','champagne','flowers','confetti'],
-  'valentines':    ['romantic','red','rojo','roses','rosas','heart','couple','candle','love','champagne'],
-  'date night':    ['romantic','candle','vela','couple','elegant','fine dining','wine','intimate','dinner','cena'],
-  'girls night':   ['friends','amigas','fun','cocktail','drinks','celebration','cheers','group'],
-  'made with love':['handmade','artisan','chef','cooking','kitchen','fresh','homemade','casero','heart','love'],
-
-  // Food
-  'churros':       ['churro','dessert','postre','chocolate','fried','sweet','dulce','cinnamon','sugar'],
-  'nigiri':        ['sushi','fish','pescado','rice','arroz','japanese','tuna','salmon','seafood','nori'],
-  'burrata':       ['cheese','queso','italian','caprese','tomato','tomate','mozzarella','fresh','salad'],
-  'gnocci':        ['gnocchi','pasta','italian','sauce','salsa','potato','papa','homemade'],
-  'pasta':         ['italian','spaghetti','fettuccine','penne','sauce','carbonara','bolognese'],
-  'steak':         ['carne','meat','beef','grill','parrilla','wagyu','filet','ribeye','medium','rare'],
-  'dessert':       ['postre','cake','torta','sweet','chocolate','ice cream','helado','tart','mousse'],
-  'heels & bows':  ['elegant','fashion','chic','upscale','cocktail','stylish','dressed','glamour','night out'],
-  'heels and bows':['elegant','fashion','chic','upscale','cocktail','stylish','dressed','glamour'],
-
-  // Events & entertainment
-  'live music':    ['music','musica','band','musician','guitar','stage','performance','night','show','concert'],
-  'f1 weekend':    ['racing','race','formula','car','speed','sport','event','screen','watch party','flag'],
-  'saturday':      ['weekend','fin de semana','brunch','night','noche','party','fiesta','fun','crowd'],
-  'the art of hands': ['hands','manos','cooking','chef','craft','detail','artisan','handmade','kitchen'],
-
-  // Dining & atmosphere
-  'fine dining':   ['elegant','plating','presentacion','candle','formal','upscale','luxury','chef','white'],
-  'dining room':   ['interior','restaurant','table','mesa','chairs','ambience','decor','elegant','lighting'],
-  'kali dining':   ['dining room','restaurant','interior','elegant','table','ambience','decor'],
-  'locations':     ['exterior','facade','building','street','entrance','sign','outdoor','location','local'],
-
-  // Baires Grill locations (Miami)
-  'las olas':      ['las olas','fortlauderdale','fort lauderdale','waterfront','canal','outdoor','patio'],
-  'new york':      ['new york','nyc','manhattan','urban','city','cosmopolitan','metropolitan'],
-  'orlando':       ['orlando','florida','resort','tourist','theme park','vacation'],
-  'miami':         ['miami','brickell','wynwood','beach','tropical','south beach','florida'],
-  'brickell':      ['brickell','miami','downtown','skyline','urban','city','financial'],
-  'coral gables':  ['coral gables','miami','upscale','mediterranean','elegant','gables'],
-  'doral':         ['doral','miami','suburb','family','community'],
-  'aventura':      ['aventura','miami','mall','upscale','north miami'],
+  'happy hour':       ['cocktail','drink','bar','copa','trago','cerveza','wine','vino','beer','martini','margarita','mojito','aperitivo','gin','whiskey','champagne','prosecco','sangria','mixology','spirits'],
+  'cocktail':         ['drink','bar','copa','trago','martini','margarita','mojito','gin','whiskey','shaker','aperitivo'],
+  'wine':             ['vino','copa','tinto','blanco','rosé','rose','sommelier','bottle','botella'],
+  'beer':             ['cerveza','draft','pint','craft','lager','ipa','ale'],
+  'baires beer':      ['beer','cerveza','draft','pint','craft','cold','mug','glass'],
+  'cheers':           ['brindis','toast','celebration','copa','glass','champagne','friends','group'],
+  'cheers and chill': ['drinks','cocktail','relax','cozy','friends','copa','bar','evening'],
+  'cheers & chill':   ['drinks','cocktail','relax','cozy','friends','copa','bar','evening'],
+  'wine monday':      ['wine','vino','copa','monday','red','tinto','white','blanco','glass','bottle'],
+  'brunch':           ['eggs','huevos','pancake','waffle','avocado','palta','mimosa','breakfast','desayuno','bacon','benedict','salmon','granola','croissant','juice','coffee'],
+  'breakfast':        ['eggs','huevos','pancake','bacon','croissant','coffee','juice','granola','desayuno'],
+  'sunday brunch':    ['eggs','mimosa','bloody mary','benedict','avocado','salmon','waffle','pancake'],
+  'lunch':            ['almuerzo','midday','sandwich','salad','ensalada','soup','sopa','plate','plato'],
+  "mother's day":     ['flowers','flores','floral','bouquet','mom','madre','celebration','brunch','pink','rosa','elegant','family','love'],
+  'mothers day':      ['flowers','flores','floral','bouquet','mom','madre','celebration','brunch','pink'],
+  'anniversary':      ['celebration','couple','pareja','romantic','candle','vela','champagne','flowers','elegant'],
+  'birthday':         ['cake','torta','celebration','candle','vela','party','fiesta','balloon','champagne'],
+  'valentines':       ['romantic','red','rojo','roses','rosas','heart','couple','candle','love'],
+  'date night':       ['romantic','candle','vela','couple','elegant','fine dining','wine','dinner','cena'],
+  'girls night':      ['friends','amigas','fun','cocktail','drinks','celebration','cheers','group'],
+  'made with love':   ['handmade','artisan','chef','cooking','kitchen','fresh','homemade','heart','love'],
+  'churros':          ['churro','dessert','postre','chocolate','fried','sweet','dulce','cinnamon','sugar'],
+  'nigiri':           ['sushi','fish','pescado','rice','arroz','japanese','tuna','salmon','seafood','nori'],
+  'burrata':          ['cheese','queso','italian','caprese','tomato','tomate','mozzarella','fresh','salad'],
+  'gnocci':           ['gnocchi','pasta','italian','sauce','salsa','potato','homemade'],
+  'pasta':            ['italian','spaghetti','fettuccine','penne','sauce','carbonara','bolognese'],
+  'steak':            ['carne','meat','beef','grill','parrilla','wagyu','filet','ribeye'],
+  'dessert':          ['postre','cake','torta','sweet','chocolate','ice cream','helado','tart','mousse'],
+  'heels & bows':     ['elegant','fashion','chic','upscale','cocktail','stylish','dressed','glamour'],
+  'heels and bows':   ['elegant','fashion','chic','upscale','cocktail','stylish','dressed','glamour'],
+  'live music':       ['music','musica','band','musician','guitar','stage','performance','show','concert'],
+  'f1 weekend':       ['racing','race','formula','car','speed','sport','event','screen','watch party'],
+  'saturday':         ['weekend','brunch','night','party','fiesta','fun','crowd'],
+  'the art of hands': ['hands','manos','cooking','chef','craft','detail','artisan','kitchen'],
+  'fine dining':      ['elegant','plating','candle','formal','upscale','luxury','chef'],
+  'dining room':      ['interior','restaurant','table','mesa','chairs','ambience','decor','elegant'],
+  'kali dining':      ['dining room','restaurant','interior','elegant','table','ambience'],
+  'locations':        ['exterior','facade','building','street','entrance','sign','outdoor'],
+  // Baires locations
+  'las olas':         ['las olas','fortlauderdale','fort lauderdale','waterfront','canal','outdoor','patio'],
+  'new york':         ['new york','nyc','manhattan','urban','city','cosmopolitan'],
+  'orlando':          ['orlando','florida','resort','tourist'],
+  'miami':            ['miami','brickell','wynwood','beach','tropical','florida'],
+  'brickell':         ['brickell','miami','downtown','skyline','urban','city'],
+  'coral gables':     ['coral gables','miami','upscale','mediterranean','elegant'],
+  'doral':            ['doral','miami','suburb','family','community'],
+  'aventura':         ['aventura','miami','mall','upscale','north miami'],
 };
 
 function scoreByName(name, theme) {
   const n = name.toLowerCase().replace(/[-_.]/g, ' ');
-  const t = theme.toLowerCase().trim();
+  const t = theme.toLowerCase().trim().replace(/^\d+[-.\s]+/, ''); // strip leading numbers
   let score = 15;
-
-  // Direct theme word match
   t.split(/\s+/).filter(w => w.length >= 3).forEach(w => { if (n.includes(w)) score += 35; });
   if (n.includes(t)) score += 20;
-
-  // Synonym matches
-  let synonyms = SYNONYMS[t] || [];
-  if (!synonyms.length) {
-    for (const [key, syns] of Object.entries(SYNONYMS)) {
+  let syns = SYNONYMS[t] || [];
+  if (!syns.length) {
+    for (const [key, vals] of Object.entries(SYNONYMS)) {
       if (t.includes(key) || key.includes(t) || t.split(/\s+/).some(w => w.length > 3 && key.includes(w))) {
-        synonyms = synonyms.concat(syns);
+        syns = syns.concat(vals);
       }
     }
   }
-  synonyms.forEach(syn => { if (n.includes(syn.toLowerCase())) score += 15; });
-
+  syns.forEach(s => { if (n.includes(s.toLowerCase())) score += 15; });
   return Math.min(score, 95);
 }
 
 // ══════════════════════════════════════════════
-//  GOOGLE VISION API
+//  VISION API
 // ══════════════════════════════════════════════
 async function visionRank(candidates, theme, apiKey) {
-  if (!apiKey) return [];
-
-  // Send up to 16 images to Vision API in one batch request
   const batch = candidates.slice(0, 16);
   const requests = batch.map(c => ({
     image: { source: { imageUri: `https://drive.google.com/uc?export=view&id=${c.id}` } },
-    features: [
-      { type: 'LABEL_DETECTION', maxResults: 15 },
-      { type: 'OBJECT_LOCALIZATION', maxResults: 10 },
-    ]
+    features: [{ type: 'LABEL_DETECTION', maxResults: 15 }, { type: 'OBJECT_LOCALIZATION', maxResults: 10 }]
   }));
-
   const resp = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ requests })
   });
-
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    throw new Error('Vision API: ' + (err?.error?.message || resp.status));
-  }
-
+  if (!resp.ok) throw new Error('Vision API ' + resp.status);
   const data = await resp.json();
-  const themeWords = theme.toLowerCase().split(/\s+/).filter(w => w.length >= 3);
+  const t = theme.toLowerCase().replace(/^\d+[-.\s]+/, '');
+  const themeWords = t.split(/\s+/).filter(w => w.length >= 3);
+  const themeSyns = SYNONYMS[t] || [];
+  const allKw = [...themeWords, ...themeSyns];
+  const familyLabels = ['child','children','kid','baby','family','toddler'];
+  const barLabels = ['cocktail','drink','alcohol','bar','beer','wine','glass','bottle'];
 
   return batch.map((c, i) => {
-    const result = data.responses?.[i] || {};
+    const res = data.responses?.[i] || {};
     const labels = [
-      ...(result.labelAnnotations || []).map(l => ({ desc: l.description.toLowerCase(), score: l.score })),
-      ...(result.localizedObjectAnnotations || []).map(l => ({ desc: l.name.toLowerCase(), score: l.score })),
+      ...(res.labelAnnotations || []).map(l => ({ desc: l.description.toLowerCase(), score: l.score })),
+      ...(res.localizedObjectAnnotations || []).map(l => ({ desc: l.name.toLowerCase(), score: l.score })),
     ];
-
-    // Score based on how well labels match the theme + synonyms
-    let visionScore = 20;
-    const themeSyns = SYNONYMS[theme.toLowerCase()] || [];
-    const allKeywords = [...themeWords, ...themeSyns.map(s => s.toLowerCase())];
-
+    let vs = 20;
     labels.forEach(({ desc, score }) => {
-      allKeywords.forEach(kw => {
-        if (desc.includes(kw) || kw.includes(desc)) {
-          visionScore += Math.round(score * 40); // weight by Vision confidence
-        }
-      });
+      allKw.forEach(kw => { if (desc.includes(kw) || kw.includes(desc)) vs += Math.round(score * 40); });
     });
-
-    // Bonus: penalize obvious mismatches
-    const familyLabels = ['child','children','kid','baby','family','toddler'];
-    const barLabels = ['cocktail','drink','alcohol','bar','beer','wine','glass','bottle'];
-    const foodLabels = ['food','dish','cuisine','meal','plate','restaurant'];
-
-    if (theme.toLowerCase().includes('happy hour') || theme.toLowerCase().includes('cocktail')) {
-      const hasBar = labels.some(l => barLabels.some(b => l.desc.includes(b)));
-      const hasFamily = labels.some(l => familyLabels.some(f => l.desc.includes(f)));
-      if (hasFamily && !hasBar) visionScore = Math.max(visionScore - 40, 0);
-      if (hasBar) visionScore += 20;
+    // Penalize family photos for bar themes
+    if (t.includes('happy hour') || t.includes('cocktail') || t.includes('bar')) {
+      if (labels.some(l => familyLabels.some(f => l.desc.includes(f))) && !labels.some(l => barLabels.some(b => l.desc.includes(b)))) {
+        vs = Math.max(vs - 50, 0);
+      }
     }
-
-    if (theme.toLowerCase().includes('brunch') || theme.toLowerCase().includes('lunch')) {
-      const hasFood = labels.some(l => foodLabels.some(f => l.desc.includes(f)));
-      if (hasFood) visionScore += 15;
-    }
-
-    return Math.min(visionScore, 95);
+    return Math.min(vs, 95);
   });
 }
 
 // ══════════════════════════════════════════════
-//  RANK PHOTOS
+//  ANTHROPIC AI RANK
 // ══════════════════════════════════════════════
-async function rankPhotos(files, theme, anthropicKey) {
-  if (!files.length) return [];
-
-  // Base scoring by filename + synonyms
-  let scored = files.map(f => ({
-    id: f.id, name: f.name,
-    thumb: f.thumbnailLink ? f.thumbnailLink.replace('=s220', '=s400') : `https://drive.google.com/thumbnail?id=${f.id}&sz=w400`,
-    driveUrl: `https://drive.google.com/file/d/${f.id}/view`,
-    score: scoreByName(f.name, theme)
-  }));
-
-  // Sort and take top 16 candidates for visual analysis
-  scored.sort((a, b) => b.score - a.score);
-  const candidates = scored.slice(0, 16);
-
-  // Try Google Vision first (free)
-  if (CFG.driveKey) {
-    try {
-      toast(`Analizando fotos con Google Vision…`);
-      const vScores = await visionRank(candidates, theme, CFG.driveKey);
-      candidates.forEach((c, i) => {
-        if (vScores[i] !== undefined) {
-          // Blend: 60% Vision + 40% name score
-          c.score = Math.round(vScores[i] * 0.6 + c.score * 0.4);
-        }
-      });
-    } catch(e) {
-      console.warn('Vision skipped:', e.message);
-    }
-  }
-
-  // If Anthropic key also available, use it on top 8 for extra accuracy
-  if (anthropicKey) {
-    const top8 = [...candidates].sort((a, b) => b.score - a.score).slice(0, 8);
-    try {
-      toast(`Refinando con IA visual…`);
-      const aiScores = await aiRank(top8, theme, anthropicKey);
-      top8.forEach((c, i) => {
-        if (aiScores[i] !== undefined) {
-          // Blend: 50% Anthropic + 30% Vision/name
-          c.score = Math.round(aiScores[i] * 0.5 + c.score * 0.5);
-        }
-      });
-      const ids = new Set(top8.map(c => c.id));
-      const rest = candidates.filter(c => !ids.has(c.id));
-      scored = [...top8, ...rest, ...scored.slice(16)];
-    } catch(e) {
-      console.warn('Anthropic rank skipped:', e.message);
-      scored = [...candidates, ...scored.slice(16)];
-    }
-  } else {
-    scored = [...candidates, ...scored.slice(16)];
-  }
-
-  // Return top 4 (1 featured + 3 alts)
-  return scored.sort((a, b) => b.score - a.score).slice(0, 4);
-}
-
 async function aiRank(candidates, theme, anthropicKey) {
   const images = [];
   for (const c of candidates) {
     try {
       const r = await fetch(c.thumb);
       const blob = await r.blob();
-      const b64 = await new Promise((res, rej) => {
-        const fr = new FileReader(); fr.onload = () => res(fr.result.split(',')[1]); fr.onerror = rej; fr.readAsDataURL(blob);
-      });
+      const b64 = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result.split(',')[1]); fr.onerror = rej; fr.readAsDataURL(blob); });
       images.push({ b64, type: blob.type || 'image/jpeg' });
     } catch(e) { images.push(null); }
   }
-
   const valid = images.filter(Boolean);
   if (!valid.length) return [];
-
+  const t = theme.replace(/^\d+[-.\s]+/, '');
   const content = [
-    { type: 'text', text: `Sos asistente de una agencia de social media de restaurantes. Tenés ${valid.length} fotos.
-
-Dá un score 0-100 de qué tan bien sirve cada foto para una historia de Instagram con temática: "${theme}".
-- 90-100: perfecta para esta temática
-- 70-89: muy relevante
-- 50-69: relacionada pero no ideal
-- 20-49: genérica de restaurante
-- 0-19: no relacionada
-
-Respondé SOLO JSON sin texto extra: {"scores":[85,42,91,...]}` },
+    { type: 'text', text: `Agencia de social media de restaurantes. ${valid.length} fotos. Score 0-100 para historia de Instagram con temática: "${t}". 90-100=perfecta, 70-89=muy buena, 50-69=relacionada, 20-49=genérica, 0-19=no relacionada. SOLO JSON: {"scores":[85,42,...]}` },
     ...valid.map(img => ({ type: 'image', source: { type: 'base64', media_type: img.type, data: img.b64 } }))
   ];
-
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': anthropicKey, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 200, messages: [{ role: 'user', content }] })
   });
   if (!resp.ok) throw new Error('Anthropic ' + resp.status);
-  const data = await resp.json();
-  const text = data.content?.map(b => b.text || '').join('') || '';
-  return JSON.parse(text.replace(/```json|```/g, '').trim()).scores || [];
+  const d = await resp.json();
+  return JSON.parse(d.content?.map(b => b.text||'').join('').replace(/```json|```/g,'').trim()).scores || [];
 }
 
 // ══════════════════════════════════════════════
-//  COPY TO CLIPBOARD
+//  RANK PHOTOS — avoid used ones
 // ══════════════════════════════════════════════
-async function copyPhoto(themeIdx, photoIdx) {
-  const t = themes[themeIdx];
-  const p = t.photos[photoIdx];
-  if (!p) return;
-  t.selected = photoIdx;
-  renderPhotos();
-  toast('⏳ Copiando en alta calidad…');
+async function rankPhotos(files, theme, anthropicKey, used) {
+  if (!files.length) return [];
 
-  // URLs to try in order — full res first, then fallbacks
-  const fullResUrls = [
-    `https://drive.google.com/uc?export=download&id=${p.id}`,
-    `https://drive.google.com/uc?export=view&id=${p.id}`,
-    p.thumb.replace('=s220', '=s1600').replace('=s400', '=s1600'), // large thumbnail
-    p.thumb, // original thumbnail
-  ];
+  // Filter and score
+  let scored = files.map(f => ({
+    id: f.id, name: f.name,
+    thumb: f.thumbnailLink ? f.thumbnailLink.replace('=s220','=s400') : `https://drive.google.com/thumbnail?id=${f.id}&sz=w400`,
+    score: scoreByName(f.name, theme),
+    wasUsed: !!used[f.id]
+  }));
 
-  // Method 1: try each URL as blob → clipboard
-  for (const url of fullResUrls) {
+  // Penalize already used photos (but don't remove them — fallback if needed)
+  scored.forEach(f => { if (f.wasUsed) f.score = Math.max(f.score - 60, 0); });
+  scored.sort((a, b) => b.score - a.score);
+  const candidates = scored.slice(0, 16);
+
+  // Google Vision
+  if (CFG.driveKey) {
     try {
-      const r = await fetch(url, { mode: 'cors' });
-      if (!r.ok) continue;
-      const blob = await r.blob();
-      if (!blob.type.startsWith('image/')) continue;
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      const isHQ = url.includes('export=download') || url.includes('s1600');
-      toast(`✓ "${p.name}" copiada ${isHQ ? 'en alta calidad' : ''} — pegá en Figma con Ctrl+V`);
-      return;
-    } catch(e) { continue; }
+      const vScores = await visionRank(candidates, theme, CFG.driveKey);
+      candidates.forEach((c, i) => {
+        if (vScores[i] !== undefined) c.score = Math.round(vScores[i] * 0.6 + c.score * 0.4);
+      });
+    } catch(e) { console.warn('Vision skipped:', e.message); }
   }
 
-  // Method 2: canvas → blob → clipboard (tries large thumb)
-  const canvasUrl = p.thumb.replace('=s220', '=s1600').replace('=s400', '=s1600');
-  try {
-    const img = new Image(); img.crossOrigin = 'anonymous';
-    await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = canvasUrl; });
-    const canvas = document.createElement('canvas');
-    canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
-    canvas.getContext('2d').drawImage(img, 0, 0);
-    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-    toast(`✓ "${p.name}" copiada — pegá en Figma con Ctrl+V`);
-    return;
-  } catch(e) {}
+  // Anthropic (top 8)
+  if (anthropicKey) {
+    const top8 = [...candidates].sort((a,b) => b.score - a.score).slice(0, 8);
+    try {
+      const aiScores = await aiRank(top8, theme, anthropicKey);
+      top8.forEach((c, i) => { if (aiScores[i] !== undefined) c.score = Math.round(aiScores[i] * 0.5 + c.score * 0.5); });
+      const ids = new Set(top8.map(c => c.id));
+      scored = [...top8, ...candidates.filter(c => !ids.has(c.id)), ...scored.slice(16)];
+    } catch(e) { scored = [...candidates, ...scored.slice(16)]; }
+  } else {
+    scored = [...candidates, ...scored.slice(16)];
+  }
 
-  // Final fallback: open full res in new tab
-  window.open(`https://drive.google.com/uc?export=view&id=${p.id}`, '_blank');
-  toast('Abrió en nueva pestaña — arrastrála a Figma (Drive bloqueó la descarga directa)');
+  // Return top 6 (1 shown + 5 for "cambiar")
+  return scored.sort((a,b) => b.score - a.score).slice(0, 6);
 }
 
 // ══════════════════════════════════════════════
@@ -902,7 +857,7 @@ function toast(msg) {
   document.getElementById('toastMsg').textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 </script>
 </body>
