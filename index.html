@@ -669,11 +669,83 @@ function scoreByName(name, theme) {
 }
 
 // ══════════════════════════════════════════════
+//  GOOGLE VISION API
+// ══════════════════════════════════════════════
+async function visionRank(candidates, theme, apiKey) {
+  if (!apiKey) return [];
+
+  // Send up to 16 images to Vision API in one batch request
+  const batch = candidates.slice(0, 16);
+  const requests = batch.map(c => ({
+    image: { source: { imageUri: `https://drive.google.com/uc?export=view&id=${c.id}` } },
+    features: [
+      { type: 'LABEL_DETECTION', maxResults: 15 },
+      { type: 'OBJECT_LOCALIZATION', maxResults: 10 },
+    ]
+  }));
+
+  const resp = await fetch(`https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requests })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error('Vision API: ' + (err?.error?.message || resp.status));
+  }
+
+  const data = await resp.json();
+  const themeWords = theme.toLowerCase().split(/\s+/).filter(w => w.length >= 3);
+
+  return batch.map((c, i) => {
+    const result = data.responses?.[i] || {};
+    const labels = [
+      ...(result.labelAnnotations || []).map(l => ({ desc: l.description.toLowerCase(), score: l.score })),
+      ...(result.localizedObjectAnnotations || []).map(l => ({ desc: l.name.toLowerCase(), score: l.score })),
+    ];
+
+    // Score based on how well labels match the theme + synonyms
+    let visionScore = 20;
+    const themeSyns = SYNONYMS[theme.toLowerCase()] || [];
+    const allKeywords = [...themeWords, ...themeSyns.map(s => s.toLowerCase())];
+
+    labels.forEach(({ desc, score }) => {
+      allKeywords.forEach(kw => {
+        if (desc.includes(kw) || kw.includes(desc)) {
+          visionScore += Math.round(score * 40); // weight by Vision confidence
+        }
+      });
+    });
+
+    // Bonus: penalize obvious mismatches
+    const familyLabels = ['child','children','kid','baby','family','toddler'];
+    const barLabels = ['cocktail','drink','alcohol','bar','beer','wine','glass','bottle'];
+    const foodLabels = ['food','dish','cuisine','meal','plate','restaurant'];
+
+    if (theme.toLowerCase().includes('happy hour') || theme.toLowerCase().includes('cocktail')) {
+      const hasBar = labels.some(l => barLabels.some(b => l.desc.includes(b)));
+      const hasFamily = labels.some(l => familyLabels.some(f => l.desc.includes(f)));
+      if (hasFamily && !hasBar) visionScore = Math.max(visionScore - 40, 0);
+      if (hasBar) visionScore += 20;
+    }
+
+    if (theme.toLowerCase().includes('brunch') || theme.toLowerCase().includes('lunch')) {
+      const hasFood = labels.some(l => foodLabels.some(f => l.desc.includes(f)));
+      if (hasFood) visionScore += 15;
+    }
+
+    return Math.min(visionScore, 95);
+  });
+}
+
+// ══════════════════════════════════════════════
 //  RANK PHOTOS
 // ══════════════════════════════════════════════
 async function rankPhotos(files, theme, anthropicKey) {
   if (!files.length) return [];
 
+  // Base scoring by filename + synonyms
   let scored = files.map(f => ({
     id: f.id, name: f.name,
     thumb: f.thumbnailLink ? f.thumbnailLink.replace('=s220', '=s400') : `https://drive.google.com/thumbnail?id=${f.id}&sz=w400`,
@@ -681,21 +753,51 @@ async function rankPhotos(files, theme, anthropicKey) {
     score: scoreByName(f.name, theme)
   }));
 
-  // If Anthropic key available, use vision AI on top candidates
-  if (anthropicKey) {
-    const top = [...scored].sort((a,b) => b.score - a.score).slice(0, 12);
+  // Sort and take top 16 candidates for visual analysis
+  scored.sort((a, b) => b.score - a.score);
+  const candidates = scored.slice(0, 16);
+
+  // Try Google Vision first (free)
+  if (CFG.driveKey) {
     try {
-      const aiScores = await aiRank(top, theme, anthropicKey);
-      top.forEach((c, i) => {
-        if (aiScores[i] !== undefined) c.score = Math.round(aiScores[i] * 0.85 + c.score * 0.15);
+      toast(`Analizando fotos con Google Vision…`);
+      const vScores = await visionRank(candidates, theme, CFG.driveKey);
+      candidates.forEach((c, i) => {
+        if (vScores[i] !== undefined) {
+          // Blend: 60% Vision + 40% name score
+          c.score = Math.round(vScores[i] * 0.6 + c.score * 0.4);
+        }
       });
-      const ids = new Set(top.map(c => c.id));
-      scored = [...top, ...scored.filter(s => !ids.has(s.id))];
-    } catch(e) { console.warn('AI rank skipped:', e.message); }
+    } catch(e) {
+      console.warn('Vision skipped:', e.message);
+    }
+  }
+
+  // If Anthropic key also available, use it on top 8 for extra accuracy
+  if (anthropicKey) {
+    const top8 = [...candidates].sort((a, b) => b.score - a.score).slice(0, 8);
+    try {
+      toast(`Refinando con IA visual…`);
+      const aiScores = await aiRank(top8, theme, anthropicKey);
+      top8.forEach((c, i) => {
+        if (aiScores[i] !== undefined) {
+          // Blend: 50% Anthropic + 30% Vision/name
+          c.score = Math.round(aiScores[i] * 0.5 + c.score * 0.5);
+        }
+      });
+      const ids = new Set(top8.map(c => c.id));
+      const rest = candidates.filter(c => !ids.has(c.id));
+      scored = [...top8, ...rest, ...scored.slice(16)];
+    } catch(e) {
+      console.warn('Anthropic rank skipped:', e.message);
+      scored = [...candidates, ...scored.slice(16)];
+    }
+  } else {
+    scored = [...candidates, ...scored.slice(16)];
   }
 
   // Return top 4 (1 featured + 3 alts)
-  return scored.sort((a,b) => b.score - a.score).slice(0, 4);
+  return scored.sort((a, b) => b.score - a.score).slice(0, 4);
 }
 
 async function aiRank(candidates, theme, anthropicKey) {
