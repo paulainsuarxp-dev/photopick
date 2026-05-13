@@ -449,30 +449,26 @@ function renderFeed() {
 
 function renderThemeBlock(t, i) {
   const isCopied = t.copied;
-  const copiedPhoto = t.photos?.[t.currentIdx];
+  const photo = t.photos?.[t.currentIdx];
+  const canChange = t.photos?.length > 1;
 
   let photoHTML = '';
   if (t.status === 'loading') {
-    photoHTML = `<div class="photos-grid-row">${[1,2,3].map(() => `<div class="skeleton"></div>`).join('')}</div>`;
-  } else if (!t.photos?.length) {
+    photoHTML = `<div class="skeleton" style="width:160px; height:138px; border-radius:8px;"></div>`;
+  } else if (!photo) {
     photoHTML = `<div class="no-photo">Sin fotos encontradas</div>`;
   } else {
-    photoHTML = `<div class="photos-grid-row">
-      ${t.photos.map((p, idx) => `
-        <div class="photo-thumb ${t.currentIdx === idx ? 'selected' : ''} ${isCopied && t.currentIdx === idx ? 'copied-state' : ''}"
-             onclick="selectAndCopy(${i}, ${idx})">
-          <img src="${p.thumb}" alt="${p.name}" onerror="this.style.opacity='.15'" />
-          <div class="photo-thumb-name">${p.name}</div>
-          ${isCopied && t.currentIdx === idx
-            ? `<div class="copied-badge">✓ copiada</div>`
-            : `<div class="copy-hint"><div class="copy-hint-icon">⎘</div><div class="copy-hint-label">copiar</div></div>`
-          }
-        </div>
-      `).join('')}
-    </div>`;
+    photoHTML = `
+      <div class="photo-thumb ${isCopied ? 'copied-state' : ''}" onclick="selectAndCopy(${i}, ${t.currentIdx})">
+        <img src="${photo.thumb}" alt="${photo.name}" onerror="this.style.opacity='.15'" />
+        <div class="photo-thumb-name">${photo.name}</div>
+        ${isCopied
+          ? `<div class="copied-badge">✓ copiada</div>`
+          : `<div class="copy-hint"><div class="copy-hint-icon">⎘</div><div class="copy-hint-label">copiar</div></div>`
+        }
+      </div>
+    `;
   }
-
-  const hasPhotos = t.photos?.length > 0;
 
   return `
     <div class="theme-block" id="theme-block-${i}">
@@ -481,9 +477,10 @@ function renderThemeBlock(t, i) {
         <div class="theme-block-name">${t.name}</div>
         <div class="theme-block-actions">
           ${isCopied ? `<span style="font-size:11px; color:#4eb8f0;">✓ copiada</span>` : ''}
+          ${canChange && t.status === 'done' ? `<button class="btn-change" onclick="changePhoto(${i})">↻ cambiar</button>` : ''}
         </div>
       </div>
-      ${photoHTML}
+      <div class="photos-grid-row">${photoHTML}</div>
     </div>
   `;
 }
@@ -819,15 +816,17 @@ async function aiRank(candidates, theme, anthropicKey) {
 async function rankPhotos(files, theme, anthropicKey, used) {
   if (!files.length) return [];
 
-  // Filter and score
+  const cleanTheme = theme.toLowerCase().trim().replace(/^\d+[-.\s]+/, '');
+
+  // Base scoring by filename + synonyms
   let scored = files.map(f => ({
     id: f.id, name: f.name,
     thumb: f.thumbnailLink ? f.thumbnailLink.replace('=s220','=s400') : `https://drive.google.com/thumbnail?id=${f.id}&sz=w400`,
-    score: scoreByName(f.name, theme),
+    score: scoreByName(f.name, cleanTheme),
     wasUsed: !!used[f.id]
   }));
 
-  // Penalize already used photos (but don't remove them — fallback if needed)
+  // Penalize already used photos
   scored.forEach(f => { if (f.wasUsed) f.score = Math.max(f.score - 60, 0); });
   scored.sort((a, b) => b.score - a.score);
   const candidates = scored.slice(0, 16);
@@ -835,19 +834,23 @@ async function rankPhotos(files, theme, anthropicKey, used) {
   // Google Vision
   if (CFG.driveKey) {
     try {
-      const vScores = await visionRank(candidates, theme, CFG.driveKey);
+      const vScores = await visionRank(candidates, cleanTheme, CFG.driveKey);
       candidates.forEach((c, i) => {
-        if (vScores[i] !== undefined) c.score = Math.round(vScores[i] * 0.6 + c.score * 0.4);
+        if (vScores[i] !== undefined) {
+          c.score = Math.round(vScores[i] * 0.7 + c.score * 0.3);
+        }
       });
     } catch(e) { console.warn('Vision skipped:', e.message); }
   }
 
-  // Anthropic (top 8)
+  // Anthropic on top 8
   if (anthropicKey) {
     const top8 = [...candidates].sort((a,b) => b.score - a.score).slice(0, 8);
     try {
-      const aiScores = await aiRank(top8, theme, anthropicKey);
-      top8.forEach((c, i) => { if (aiScores[i] !== undefined) c.score = Math.round(aiScores[i] * 0.5 + c.score * 0.5); });
+      const aiScores = await aiRank(top8, cleanTheme, anthropicKey);
+      top8.forEach((c, i) => {
+        if (aiScores[i] !== undefined) c.score = Math.round(aiScores[i] * 0.6 + c.score * 0.4);
+      });
       const ids = new Set(top8.map(c => c.id));
       scored = [...top8, ...candidates.filter(c => !ids.has(c.id)), ...scored.slice(16)];
     } catch(e) { scored = [...candidates, ...scored.slice(16)]; }
@@ -855,7 +858,7 @@ async function rankPhotos(files, theme, anthropicKey, used) {
     scored = [...candidates, ...scored.slice(16)];
   }
 
-  // Return top 6 (1 shown + 5 for "cambiar")
+  // Return top 6 for cycling with "cambiar"
   return scored.sort((a,b) => b.score - a.score).slice(0, 6);
 }
 
