@@ -433,6 +433,7 @@ function initGoogleAuth() {
     callback: (resp) => {
       if (resp.error) { toast('❌ Error al iniciar sesión'); return; }
       oauthToken = resp.access_token;
+      sessionStorage.setItem('pp_oauth', oauthToken);
       // Obtener info del usuario
       fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
         headers: { Authorization: `Bearer ${oauthToken}` }
@@ -440,6 +441,8 @@ function initGoogleAuth() {
         document.getElementById('userAvatar').src = info.picture || '';
         document.getElementById('userName').textContent = info.name || info.email || '';
         document.getElementById('userBadge').style.display = 'flex';
+        sessionStorage.setItem('pp_user', info.name || info.email || '');
+        sessionStorage.setItem('pp_avatar', info.picture || '');
       }).catch(() => {
         document.getElementById('userBadge').style.display = 'flex';
       });
@@ -448,10 +451,16 @@ function initGoogleAuth() {
     }
   });
 
-  // Limpiar sesión anterior para forzar nuevo login con scopes actualizados
-  sessionStorage.removeItem('pp_oauth');
-  sessionStorage.removeItem('pp_user');
-  sessionStorage.removeItem('pp_avatar');
+  // Restaurar sesión si existe
+  const saved = sessionStorage.getItem('pp_oauth');
+  if (saved) {
+    oauthToken = saved;
+    document.getElementById('authOverlay').classList.add('hidden');
+    document.getElementById('userBadge').style.display = 'flex';
+    document.getElementById('userName').textContent = sessionStorage.getItem('pp_user') || '';
+    const avatar = sessionStorage.getItem('pp_avatar');
+    if (avatar) document.getElementById('userAvatar').src = avatar;
+  }
 }
 
 function startGoogleLogin() {
