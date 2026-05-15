@@ -452,14 +452,6 @@ function initGoogleAuth() {
   sessionStorage.removeItem('pp_oauth');
   sessionStorage.removeItem('pp_user');
   sessionStorage.removeItem('pp_avatar');
-  if (saved) {
-    oauthToken = saved;
-    document.getElementById('authOverlay').classList.add('hidden');
-    document.getElementById('userBadge').style.display = 'flex';
-    document.getElementById('userName').textContent = sessionStorage.getItem('pp_user') || '';
-    const avatar = sessionStorage.getItem('pp_avatar');
-    if (avatar) document.getElementById('userAvatar').src = avatar;
-  }
 }
 
 function startGoogleLogin() {
@@ -911,10 +903,15 @@ async function fetchDriveFilesForTheme(folderId, apiKey, theme) {
     kp = `&key=${apiKey}`;
   }
 
-  // 1. Get subfolders of the client root
-  const fq = encodeURIComponent(`'${folderId}' in parents and trashed=false and mimeType='application/vnd.google-apps.folder'`);
-  const fr = await fetch(`https://www.googleapis.com/drive/v3/files?q=${fq}&fields=files(id,name)&pageSize=50&includeItemsFromAllDrives=true&supportsAllDrives=true${kp}`, { headers });
-  const subfolders = fr.ok ? ((await fr.json()).files || []) : [];
+  // 1. Get subfolders + shortcuts of the client root
+  const fq = encodeURIComponent(`'${folderId}' in parents and trashed=false and (mimeType='application/vnd.google-apps.folder' or mimeType='application/vnd.google-apps.shortcut')`);
+  const fr = await fetch(`https://www.googleapis.com/drive/v3/files?q=${fq}&fields=files(id,name,mimeType,shortcutDetails)&pageSize=50${kp}`, { headers });
+  const rawSubs = fr.ok ? ((await fr.json()).files || []) : [];
+  // Resolver shortcuts a sus IDs reales
+  const subfolders = rawSubs.map(s => ({
+    id: s.mimeType === 'application/vnd.google-apps.shortcut' ? s.shortcutDetails?.targetId : s.id,
+    name: s.name
+  })).filter(s => s.id);
 
   // 2. Find best matching subfolder for this theme
   const bestFolder = getBestFolderMatch(theme, subfolders);
@@ -962,17 +959,26 @@ async function fetchRecursive(folderId, apiKey, all, depth, maxDepth = 6) {
   const iq = encodeURIComponent(`'${folderId}' in parents and trashed=false and ${mimes}`);
   let pt = '';
   do {
-    const url = `https://www.googleapis.com/drive/v3/files?q=${iq}&fields=${encodeURIComponent('nextPageToken,files(id,name,thumbnailLink,mimeType)')}&pageSize=100&includeItemsFromAllDrives=true&supportsAllDrives=true${kp}${pt ? '&pageToken='+pt : ''}`;
+    const url = `https://www.googleapis.com/drive/v3/files?q=${iq}&fields=${encodeURIComponent('nextPageToken,files(id,name,thumbnailLink,mimeType,shortcutDetails)')}&pageSize=100${kp}${pt ? '&pageToken='+pt : ''}`;
     const r = await fetch(url, { headers });
     if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e?.error?.message || `HTTP ${r.status}`); }
     const d = await r.json();
     all.push(...(d.files || []));
     pt = d.nextPageToken || '';
   } while(pt);
-  const fq = encodeURIComponent(`'${folderId}' in parents and trashed=false and mimeType='application/vnd.google-apps.folder'`);
-  const fr = await fetch(`https://www.googleapis.com/drive/v3/files?q=${fq}&fields=files(id,name)&pageSize=50&includeItemsFromAllDrives=true&supportsAllDrives=true${kp}`, { headers });
+
+  // Get subfolders AND shortcuts
+  const fq = encodeURIComponent(`'${folderId}' in parents and trashed=false and (mimeType='application/vnd.google-apps.folder' or mimeType='application/vnd.google-apps.shortcut')`);
+  const fr = await fetch(`https://www.googleapis.com/drive/v3/files?q=${fq}&fields=files(id,name,mimeType,shortcutDetails)&pageSize=50${kp}`, { headers });
   if (!fr.ok) return;
-  for (const sub of ((await fr.json()).files || [])) await fetchRecursive(sub.id, apiKey, all, depth + 1, maxDepth);
+  const subs = (await fr.json()).files || [];
+  for (const sub of subs) {
+    // Si es un shortcut, resolver el ID real
+    const realId = sub.mimeType === 'application/vnd.google-apps.shortcut'
+      ? sub.shortcutDetails?.targetId
+      : sub.id;
+    if (realId) await fetchRecursive(realId, apiKey, all, depth + 1, maxDepth);
+  }
 }
 
 // ══════════════════════════════════════════════
