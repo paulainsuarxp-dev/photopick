@@ -170,6 +170,10 @@ textarea#themesInput::placeholder, input#freeSearchInput::placeholder { color: v
 }
 
 .skeleton { width: 100%; height: 160px; border-radius: 8px; background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+.loading-state { width: 100%; height: 160px; border-radius: 8px; border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.spinner { width: 22px; height: 22px; border: 2px solid var(--line2); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loading-label { font-size: 10px; color: var(--text3); font-family: var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 @keyframes wiggle { 0%,100%{transform:rotate(0deg) scale(1)} 25%{transform:rotate(-12deg) scale(1.1)} 75%{transform:rotate(12deg) scale(1.1)} }
 .no-photo { width: 100%; height: 100px; border-radius: 8px; border: 1px dashed var(--line2); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text3); }
@@ -387,8 +391,8 @@ textarea#themesInput::placeholder, input#freeSearchInput::placeholder { color: v
       </div>
       <div class="field">
         <div class="field-label">Anthropic API Key <span style="color:var(--text3)">(opcional)</span></div>
-        <div class="field-hint">En <code>console.anthropic.com</code> → API Keys → Create key.</div>
-        <input class="field-input" id="anthropicKeyInput" type="password" placeholder="sk-ant-..." />
+        <div class="field-hint">En <code>aistudio.google.com</code> → Get API Key.</div>
+        <input class="field-input" id="anthropicKeyInput" type="password" placeholder="AIzaSy..." />
       </div>
     </div>
     <div class="modal-foot">
@@ -541,6 +545,7 @@ window.addEventListener('load', () => {
 //  CONFIG & CLIENTS
 // ══════════════════════════════════════════════
 let CFG = JSON.parse(localStorage.getItem('pp_cfg') || '{}');
+if (!CFG.anthropicKey) CFG.anthropicKey = 'AIzaSyDFbDW0u1HJi9ZTJdylr22ClLwE4PdXoX0';
 let CLIENTS = JSON.parse(localStorage.getItem('pp_clients') || '[]');
 
 if (CLIENTS.length === 0) {
@@ -686,7 +691,7 @@ function setMode(mode) {
 // Enter key support — week mode
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('themesInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); startSearch(); }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); startSearch(); }
   });
   document.getElementById('freeSearchInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); startFreeSearch(); }
@@ -791,9 +796,9 @@ function renderThemeBlock(t, i) {
 
   let photoHTML = '';
   if (t.status === 'loading') {
-    photoHTML = `<div class="skeleton"></div>`;
+    photoHTML = `<div class="loading-state"><div class="spinner"></div><div class="loading-label">Buscando...</div></div>`;
   } else if (!photo) {
-    photoHTML = `<div class="no-photo">Sin fotos</div>`;
+    photoHTML = `<div class="no-photo">Sin resultados</div>`;
   } else {
     photoHTML = `
       <div class="photo-thumb ${isCopied ? 'copied-state' : ''}" onclick="selectAndCopy(${i}, ${t.currentIdx})">
@@ -1271,7 +1276,7 @@ async function visionRank(candidates, theme, apiKey) {
 // ══════════════════════════════════════════════
 //  ANTHROPIC AI RANK
 // ══════════════════════════════════════════════
-async function aiRank(candidates, theme, anthropicKey) {
+async function aiRank(candidates, theme, geminiKey) {
   const images = [];
   for (const c of candidates) {
     try {
@@ -1281,27 +1286,30 @@ async function aiRank(candidates, theme, anthropicKey) {
       images.push({ b64, type: blob.type || 'image/jpeg' });
     } catch(e) { images.push(null); }
   }
-  const valid = images.filter(Boolean);
+  const valid = images.map((img, i) => img ? { img, idx: i } : null).filter(Boolean);
   if (!valid.length) return [];
   const t = theme.replace(/^\d+[-.\s]+/, '');
-  const content = [
-    { type: 'text', text: `Agencia de social media de restaurantes. ${valid.length} fotos. Score 0-100 para historia de Instagram con temática: "${t}". 90-100=perfecta, 70-89=muy buena, 50-69=relacionada, 20-49=genérica, 0-19=no relacionada. SOLO JSON: {"scores":[85,42,...]}` },
-    ...valid.map(img => ({ type: 'image', source: { type: 'base64', media_type: img.type, data: img.b64 } }))
+
+  const parts = [
+    { text: `Agencia de social media de restaurantes. ${valid.length} fotos numeradas. Score 0-100 para historia de Instagram con temática: "${t}". 90-100=perfecta, 70-89=muy buena, 50-69=relacionada, 20-49=genérica, 0-19=no relacionada. SOLO JSON sin markdown: {"scores":[85,42,...]}` },
+    ...valid.map(({ img }) => ({ inline_data: { mime_type: img.type, data: img.b64 } }))
   ];
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+
+  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${geminiKey}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': anthropicKey, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 200, messages: [{ role: 'user', content }] })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts }] })
   });
-  if (!resp.ok) throw new Error('Anthropic ' + resp.status);
+  if (!resp.ok) throw new Error('Gemini ' + resp.status);
   const d = await resp.json();
-  return JSON.parse(d.content?.map(b => b.text||'').join('').replace(/```json|```/g,'').trim()).scores || [];
+  const text = d.candidates?.[0]?.content?.parts?.map(p => p.text||'').join('') || '';
+  return JSON.parse(text.replace(/```json|```/g,'').trim()).scores || [];
 }
 
 // ══════════════════════════════════════════════
 //  RANK PHOTOS — avoid used ones
 // ══════════════════════════════════════════════
-async function rankPhotos(files, theme, anthropicKey, used) {
+async function rankPhotos(files, theme, geminiKey, used) {
   if (!files.length) return [];
 
   const cleanTheme = theme.toLowerCase().trim().replace(/^\d+[-.\s]+/, '');
@@ -1331,17 +1339,17 @@ async function rankPhotos(files, theme, anthropicKey, used) {
     } catch(e) { console.warn('Vision skipped:', e.message); }
   }
 
-  // Anthropic on top 8
-  if (anthropicKey) {
+  // Gemini on top 8
+  if (geminiKey) {
     const top8 = [...candidates].sort((a,b) => b.score - a.score).slice(0, 8);
     try {
-      const aiScores = await aiRank(top8, cleanTheme, anthropicKey);
+      const aiScores = await aiRank(top8, cleanTheme, geminiKey);
       top8.forEach((c, i) => {
         if (aiScores[i] !== undefined) c.score = Math.round(aiScores[i] * 0.6 + c.score * 0.4);
       });
       const ids = new Set(top8.map(c => c.id));
       scored = [...top8, ...candidates.filter(c => !ids.has(c.id)), ...scored.slice(16)];
-    } catch(e) { scored = [...candidates, ...scored.slice(16)]; }
+    } catch(e) { console.warn('Gemini skipped:', e.message); scored = [...candidates, ...scored.slice(16)]; }
   } else {
     scored = [...candidates, ...scored.slice(16)];
   }
