@@ -31,9 +31,9 @@ header {
 }
 .logo { font-family: var(--font-head); font-size: 16px; font-weight: 700; letter-spacing: -0.03em; display: flex; align-items: center; gap: 8px; }
 .logo-rxp { display: flex; align-items: center; gap: 8px; }
-.logo-icon { width: 26px; height: 26px; }
+.logo-icon { width: 26px; height: 26px; border-radius: 50%; }
 .logo-name { color: var(--text); }
-.logo-tool { color: var(--text3); font-weight: 400; font-size: 12px; letter-spacing: 0; }
+.logo-tool { color: var(--text2); font-weight: 500; font-size: 13px; letter-spacing: 0; }
 .header-sep { flex: 1; }
 
 /* Mode tabs */
@@ -151,7 +151,7 @@ textarea#themesInput::placeholder, input#freeSearchInput::placeholder { color: v
 }
 .photo-thumb:hover { border-color: rgba(251,95,44,0.5); transform: translateY(-2px); }
 .photo-thumb.copied-state { border-color: var(--cream); }
-.photo-thumb img { width: 100%; height: 160px; object-fit: cover; display: block; background: var(--bg4); }
+.photo-thumb img { width: 100%; height: 220px; object-fit: cover; display: block; background: var(--bg4); }
 .photo-thumb-name { font-size: 9px; color: var(--text3); padding: 5px 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--font-body); }
 
 .copy-hint {
@@ -169,8 +169,8 @@ textarea#themesInput::placeholder, input#freeSearchInput::placeholder { color: v
   letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-head);
 }
 
-.skeleton { width: 100%; height: 160px; border-radius: 8px; background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
-.loading-state { width: 100%; height: 160px; border-radius: 8px; border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.skeleton { width: 100%; height: 220px; border-radius: 8px; background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+.loading-state { width: 100%; height: 220px; border-radius: 8px; border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
 .spinner { width: 22px; height: 22px; border: 2px solid var(--line2); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.8s linear infinite; }
 .loading-label { font-size: 10px; color: var(--text3); font-family: var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -262,7 +262,39 @@ textarea#themesInput::placeholder, input#freeSearchInput::placeholder { color: v
 /* ── User badge ── */
 .user-badge { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text2); font-family: var(--font-body); }
 .user-avatar { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--orange); }
+.user-avatar-emoji {
+  width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--orange);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  cursor: pointer; background: var(--bg3); transition: transform .15s;
+  user-select: none;
+}
+.user-avatar-emoji:hover { transform: scale(1.15); }
 .user-name { max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── Avatar picker modal ── */
+.avatar-picker-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+}
+.avatar-picker-overlay.hidden { display: none; }
+.avatar-picker-card {
+  background: var(--bg2); border: 1px solid var(--line2); border-radius: 16px;
+  padding: 24px; max-width: 320px; width: 90%;
+}
+.avatar-picker-title {
+  font-family: var(--font-head); font-size: 16px; font-weight: 600; margin-bottom: 16px;
+  letter-spacing: -0.02em; text-align: center;
+}
+.avatar-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 16px;
+}
+.avatar-option {
+  width: 40px; height: 40px; border-radius: 10px; border: 2px solid transparent;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+  cursor: pointer; background: var(--bg3); transition: all .12s;
+}
+.avatar-option:hover { background: var(--bg4); transform: scale(1.1); }
+.avatar-option.selected { border-color: var(--orange); background: var(--orange2); }
 .btn-logout {
   font-family: var(--font-copy); font-size: 10px; cursor: pointer; padding: 3px 8px;
   border-radius: 5px; border: 1px solid var(--line2); background: transparent;
@@ -273,6 +305,11 @@ textarea#themesInput::placeholder, input#freeSearchInput::placeholder { color: v
 /* ── Mode panels ── */
 .mode-panel { display: none; }
 .mode-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+/* ── Free results header ── */
+.free-results-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+.free-results-title { font-family: var(--font-head); font-size: 18px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+.free-results-count { font-size: 11px; color: var(--text3); font-family: var(--font-body); }
 </style>
 </head>
 <body>
@@ -293,6 +330,15 @@ textarea#themesInput::placeholder, input#freeSearchInput::placeholder { color: v
   </div>
 </div>
 
+<!-- Avatar picker -->
+<div class="avatar-picker-overlay hidden" id="avatarPickerOverlay">
+  <div class="avatar-picker-card">
+    <div class="avatar-picker-title">Elegí tu avatar 🎨</div>
+    <div class="avatar-grid" id="avatarGrid"></div>
+    <button class="btn-save" style="width:100%" onclick="closeAvatarPicker()">Listo</button>
+  </div>
+</div>
+
 <div class="shell">
   <header>
     <div class="logo logo-rxp">
@@ -306,7 +352,7 @@ textarea#themesInput::placeholder, input#freeSearchInput::placeholder { color: v
     </div>
     <div class="header-sep"></div>
     <div class="user-badge" id="userBadge" style="display:none">
-      <img class="user-avatar" id="userAvatar" src="" alt="" />
+      <div class="user-avatar-emoji" id="userAvatarEmoji" onclick="openAvatarPicker()">🐱</div>
       <span class="user-name" id="userName"></span>
       <button class="btn-logout" onclick="logout()">salir</button>
     </div>
@@ -486,11 +532,14 @@ function initGoogleAuth() {
       fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
         headers: { Authorization: `Bearer ${oauthToken}` }
       }).then(r => r.json()).then(info => {
-        document.getElementById('userAvatar').src = info.picture || '';
-        document.getElementById('userName').textContent = info.name || info.email || '';
+        const name = info.name || info.email || '';
+        const firstName = name.split(' ')[0];
+        document.getElementById('userAvatarEmoji').textContent = getAvatarEmoji();
+        document.getElementById('userName').textContent = firstName;
         document.getElementById('userBadge').style.display = 'flex';
-        sessionStorage.setItem('pp_user', info.name || info.email || '');
-        sessionStorage.setItem('pp_avatar', info.picture || '');
+        sessionStorage.setItem('pp_user', firstName);
+        // Si es primera vez, abrir el picker
+        if (!localStorage.getItem('pp_avatar_emoji')) openAvatarPicker();
       }).catch(() => {
         document.getElementById('userBadge').style.display = 'flex';
       });
@@ -506,8 +555,7 @@ function initGoogleAuth() {
     document.getElementById('authOverlay').classList.add('hidden');
     document.getElementById('userBadge').style.display = 'flex';
     document.getElementById('userName').textContent = sessionStorage.getItem('pp_user') || '';
-    const avatar = sessionStorage.getItem('pp_avatar');
-    if (avatar) document.getElementById('userAvatar').src = avatar;
+    document.getElementById('userAvatarEmoji').textContent = getAvatarEmoji();
   }
 }
 
@@ -540,6 +588,40 @@ window.addEventListener('load', () => {
     }, 200);
   }
 });
+
+// ══════════════════════════════════════════════
+//  AVATAR PICKER
+// ══════════════════════════════════════════════
+const AVATARS = ['🐱','🐶','🐻','🐼','🐨','🐯','🦊','🐸','🐧','🦋','🌸','🌵','🍓','🍕','🌈','🦄','🐙','🌙','⭐','🎀','🍦','🌺','🦜','🐢'];
+
+function initAvatarGrid() {
+  const saved = localStorage.getItem('pp_avatar_emoji') || '🐱';
+  const grid = document.getElementById('avatarGrid');
+  grid.innerHTML = AVATARS.map(e => `
+    <div class="avatar-option ${e === saved ? 'selected' : ''}" onclick="selectAvatar('${e}')">${e}</div>
+  `).join('');
+}
+
+function selectAvatar(emoji) {
+  localStorage.setItem('pp_avatar_emoji', emoji);
+  document.getElementById('userAvatarEmoji').textContent = emoji;
+  document.querySelectorAll('.avatar-option').forEach(el => {
+    el.classList.toggle('selected', el.textContent === emoji);
+  });
+}
+
+function openAvatarPicker() {
+  initAvatarGrid();
+  document.getElementById('avatarPickerOverlay').classList.remove('hidden');
+}
+
+function closeAvatarPicker() {
+  document.getElementById('avatarPickerOverlay').classList.add('hidden');
+}
+
+function getAvatarEmoji() {
+  return localStorage.getItem('pp_avatar_emoji') || '🐱';
+}
 
 // ══════════════════════════════════════════════
 //  CONFIG & CLIENTS
@@ -699,17 +781,71 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ══════════════════════════════════════════════
-//  FREE SEARCH
+//  FREE SEARCH RENDER — shows multiple photos
 // ══════════════════════════════════════════════
+function renderFreeResults(photos, query) {
+  const feed = document.getElementById('photosFeed');
+  if (!photos.length) {
+    feed.innerHTML = `<div class="state-box"><div class="state-icon">🔍</div><div class="state-title">Sin resultados</div><div class="state-sub">Probá con otra búsqueda.</div></div>`;
+    return;
+  }
+  const used = getUsedForClient(activeClientId);
+  const cards = photos.slice(0, 5).map((photo, i) => {
+    const isCopied = !!used[photo.id];
+    return `
+      <div class="theme-block" id="free-block-${i}">
+        <div class="photo-thumb ${isCopied ? 'copied-state' : ''}" onclick="copyFreePhoto('${photo.id}','${photo.name}','${photo.thumb}', this)">
+          <img src="${photo.thumb}" alt="${photo.name}" onerror="this.style.opacity='.15'" />
+          <div class="photo-thumb-name">${photo.name}</div>
+          ${isCopied
+            ? `<div class="copied-badge">✓</div>`
+            : `<div class="copy-hint"><div class="copy-hint-icon">⎘</div><div class="copy-hint-label">copiar</div></div>`
+          }
+        </div>
+      </div>`;
+  }).join('');
+  feed.innerHTML = `<div class="free-results-header"><span class="free-results-title">${query}</span><span class="free-results-count">${Math.min(photos.length, 5)} fotos</span></div><div class="cards-grid">${cards}</div>`;
+}
+
+async function copyFreePhoto(id, name, thumb, el) {
+  toast('⏳ Copiando…');
+  const urls = [
+    `https://drive.google.com/uc?export=download&id=${id}`,
+    `https://drive.google.com/uc?export=view&id=${id}`,
+    thumb.replace('=s220','=s1600').replace('=s400','=s1600'),
+    thumb,
+  ];
+  let copied = false;
+  for (const url of urls) {
+    try {
+      const r = await fetch(url, { mode: 'cors' });
+      if (!r.ok) continue;
+      const blob = await r.blob();
+      if (!blob.type.startsWith('image/')) continue;
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      copied = true; break;
+    } catch(e) { continue; }
+  }
+  if (copied) {
+    markPhotoUsed(activeClientId, id);
+    el.classList.add('copied-state');
+    const badge = el.querySelector('.copy-hint');
+    if (badge) badge.outerHTML = `<div class="copied-badge">✓</div>`;
+    toast(`✓ "${name}" copiada — pegá en Figma con Ctrl+V`);
+  } else {
+    window.open(`https://drive.google.com/file/d/${id}/view`, '_blank');
+    toast('Abrí en Drive y copiá desde ahí');
+  }
+}
 async function startFreeSearch() {
   const query = document.getElementById('freeSearchInput').value.trim();
   if (!query) { toast('Escribí algo para buscar'); return; }
   const client = getActiveClient();
   if (!client) { toast('Elegí un cliente primero'); return; }
 
-  themes = [{ name: query, status: 'pending', photos: [], currentIdx: 0, copied: false }];
-  renderSidebar('free');
-  renderFeed();
+  // Show loading immediately
+  const feed = document.getElementById('photosFeed');
+  feed.innerHTML = `<div class="state-box"><div class="loading-state" style="height:80px;border:none;"><div class="spinner"></div><div class="loading-label">Buscando...</div></div></div>`;
 
   const btn = document.getElementById('freeSearchBtn');
   btn.disabled = true;
@@ -718,24 +854,17 @@ async function startFreeSearch() {
   bar.style.width = '10%';
 
   try {
-    toast('Buscando en Drive…');
     await getSubfolders(client.folder);
-    bar.style.width = '30%';
-    themes[0].status = 'loading';
-    updateThemeBlock(0);
+    bar.style.width = '40%';
     const files = await fetchDriveFilesForTheme(client.folder, CFG.driveKey, query);
+    bar.style.width = '70%';
     const used = getUsedForClient(activeClientId);
     const ranked = await rankPhotos(files, query, CFG.anthropicKey, used);
-    themes[0].photos = ranked;
-    themes[0].currentIdx = 0;
-    themes[0].status = 'done';
     bar.style.width = '100%';
-    updateThemeBlock(0);
-    renderSidebar('free');
-    toast(ranked.length ? `✓ ${ranked.length} fotos encontradas` : 'Sin resultados — probá otra búsqueda');
+    renderFreeResults(ranked, query);
+    toast(ranked.length ? `✓ ${Math.min(ranked.length,5)} fotos encontradas` : 'Sin resultados — probá otra búsqueda');
   } catch(e) {
-    themes[0].status = 'done';
-    updateThemeBlock(0);
+    renderFreeResults([], query);
     toast('❌ ' + e.message);
   }
 
@@ -936,7 +1065,7 @@ async function startSearch() {
   const client = getActiveClient();
   if (!client) { toast('Elegí un cliente primero'); return; }
 
-  themes = names.map(name => ({ name, status: 'pending', photos: [], currentIdx: 0, copied: false }));
+  themes = names.map(name => ({ name, status: 'loading', photos: [], currentIdx: 0, copied: false }));
   renderSidebar();
   renderFeed();
 
@@ -1354,7 +1483,7 @@ async function rankPhotos(files, theme, geminiKey, used) {
     scored = [...candidates, ...scored.slice(16)];
   }
 
-  // Return top 6 for cycling with "cambiar"
+  // Return top 6 for cycling (5 for free search handled in caller)
   return scored.sort((a,b) => b.score - a.score).slice(0, 6);
 }
 
